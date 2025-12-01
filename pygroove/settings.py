@@ -11,16 +11,20 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import json
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load secrets from secrets.json
+with open(BASE_DIR / 'secrets.json') as f:
+    secrets = json.load(f)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-_&fqc0=cfb3q1sf)&16c3h+e)66mkd&b7!s@fjs*yga8+amriq'
+SECRET_KEY = secrets['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -145,4 +149,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # EMAIL_HOST_PASSWORD = 'your-app-password'
 
 DEFAULT_FROM_EMAIL = 'pygroove@example.com'
-COLLECTOR_EMAIL = 'phpcds@aretemm.net'  # The Collector's email
+COLLECTOR_EMAIL = secrets.get('COLLECTOR_EMAIL', 'phpcds@aretemm.net')
+
+# Discogs API
+DISCOGS_TOKEN = secrets.get('DISCOGS_TOKEN', '')
