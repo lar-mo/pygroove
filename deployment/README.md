@@ -25,7 +25,7 @@ From your local machine:
 ```bash
 cd /Users/larrymoiola/Code/GitHub/pygroove
 rsync -avz --exclude='venv' --exclude='*.pyc' --exclude='__pycache__' \
-  --exclude='db.sqlite3' --exclude='media' --exclude='.git' \
+  --exclude='db.sqlite3' --exclude='media' --exclude='.git' --exclude='secrets.json' \
   . dhvps:/home/lar_mo/pygroove.lar-mo.com/pygroove/
 ```
 
@@ -80,10 +80,9 @@ python -c "from django.core.management.utils import get_random_secret_key; print
 
 ### 6. Upload Media Files (if needed)
 
-If you have existing album covers and artist images:
+If you have existing album covers and artist images, upload them from local machine:
 
 ```bash
-# From local machine
 rsync -avz /Users/larrymoiola/Code/GitHub/pygroove/media/ \
   dhvps:/home/lar_mo/pygroove.lar-mo.com/pygroove/media/
 ```
@@ -206,10 +205,9 @@ tail -f ~/pygroove.lar-mo.com/logs/gunicorn_access.log
 
 ## Updating Code
 
-When you push changes to GitHub:
+When you push changes to GitHub, SSH into VPS and pull the updates:
 
 ```bash
-# SSH into VPS
 ssh dhvps
 cd /home/lar_mo/pygroove.lar-mo.com/pygroove
 
