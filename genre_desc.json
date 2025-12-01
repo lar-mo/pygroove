@@ -1,0 +1,29 @@
+[
+{"type":"header","version":"5.2.2","comment":"Export to JSON plugin for PHPMyAdmin"},
+{"type":"database","name":"phpcds_aretemmnet"},
+{"type":"table","name":"genre_desc","database":"phpcds_aretemmnet","data":
+[
+{"id":"1","genreName":"Acid Jazz","genreDesc":null},
+{"id":"2","genreName":"Alternative","genreDesc":"Indie Rock, New Wave"},
+{"id":"3","genreName":"Blues","genreDesc":"Chicago, Delta, Jump"},
+{"id":"4","genreName":"Classical","genreDesc":null},
+{"id":"5","genreName":"Dance","genreDesc":"Club, Disco, House"},
+{"id":"6","genreName":"Electronica","genreDesc":"Ambient, Drum 'N Bass, Techno"},
+{"id":"7","genreName":"Emo","genreDesc":null},
+{"id":"8","genreName":"Funk","genreDesc":null},
+{"id":"9","genreName":"Hip Hop","genreDesc":"Gangsta, Old School, Underground"},
+{"id":"10","genreName":"Jazz","genreDesc":"Big Band\/Swing, Bop, Fusion"},
+{"id":"11","genreName":"Latin","genreDesc":"Latin Jazz, Salsa, Tejano"},
+{"id":"12","genreName":"Metal","genreDesc":null},
+{"id":"13","genreName":"New Age","genreDesc":"Ethnic Fusion, Neo Classical, Smooth Jazz"},
+{"id":"14","genreName":"Pop","genreDesc":"Adult Contemporary, Dance Pop, Pop Rock"},
+{"id":"15","genreName":"R&B\/Soul","genreDesc":"Funk, Motown, Urban"},
+{"id":"16","genreName":"Reggae","genreDesc":"Dance Hall, Roots Reggae, Ska"},
+{"id":"17","genreName":"Rock","genreDesc":"Surf Rock, Hard Rock, Rap Metal"},
+{"id":"18","genreName":"Soundtrack","genreDesc":null},
+{"id":"19","genreName":"Trip Hop","genreDesc":null},
+{"id":"20","genreName":"Vocal","genreDesc":"Cabaret, Standards, Traditional Pop"},
+{"id":"21","genreName":"Other","genreDesc":null}
+]
+}
+]

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="flex flex-col items-center justify-center min-h-[60vh] text-center">
+    <h1 class="text-6xl font-bold mb-6 bg-gradient-to-r from-vinyl-purple via-vinyl-teal to-vinyl-orange bg-clip-text text-transparent">
+        Spin your collection.<br>Share your groove.
+    </h1>
+    <p class="text-xl text-gray-400 mb-8 max-w-2xl">
+        Browse your personal vinyl and CD collection. Curate albums to share with friends. 
+        Keep the music alive, one disc at a time.
+    </p>
+    <a href="{% url 'collection' %}" class="bg-gradient-to-r from-vinyl-purple to-vinyl-teal px-8 py-4 rounded-lg text-white font-bold text-lg hover:scale-105 transform transition-all shadow-lg hover:shadow-vinyl-purple/50">
+        Browse Collection
+    </a>
+</div>
+
+<!-- Recently Added Albums -->
+<div class="mt-16">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-3xl font-bold">Recently Added</h2>
+        <a href="{% url 'collection' %}" class="text-vinyl-teal hover:text-vinyl-purple transition-colors">View All →</a>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        {% for album in recent_albums %}
+            <div class="group relative bg-gray-900 rounded-lg overflow-hidden border border-gray-800 hover:border-vinyl-purple transition-all duration-300 hover:scale-105">
+                <a href="{% url 'album_detail' album.id %}" class="block">
+                    <div class="aspect-square overflow-hidden bg-gray-800">
+                        {% if album.cover_image %}
+                            <img src="{{ album.cover_image.url }}" alt="{{ album.title }}" 
+                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                        {% else %}
+                            <img src="/media/no_art.jpg" alt="No Cover" 
+                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                        {% endif %}
+                    </div>
+                    <div class="p-2">
+                        <h3 class="font-bold text-sm text-white truncate">{{ album.title }}</h3>
+                        <p class="text-xs text-gray-400 truncate">{{ album.artist.name }}</p>
+                    </div>
+                </a>
+            </div>
+        {% empty %}
+            <p class="text-gray-500 col-span-full text-center">No albums yet. Start adding to your collection!</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

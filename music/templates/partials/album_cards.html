@@ -1,0 +1,20 @@
+{% for album in albums %}
+    <div class="group relative bg-gray-900 rounded-lg overflow-hidden border border-gray-800 hover:border-vinyl-purple transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-vinyl-purple/20">
+        <a href="{% url 'album_detail' album.id %}" class="block">
+            <div class="aspect-square overflow-hidden bg-gray-800">
+                {% if album.cover_image %}
+                    <img src="{{ album.cover_image.url }}" alt="{{ album.title }}" 
+                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                {% else %}
+                    <img src="/media/no_art.jpg" alt="No Cover" 
+                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                {% endif %}
+            </div>
+            <div class="p-3">
+                <h3 class="font-bold text-white truncate group-hover:text-vinyl-teal transition-colors">{{ album.title }}</h3>
+                <p class="text-sm text-gray-400 truncate">{{ album.artist.name }}</p>
+                <p class="text-xs text-gray-500">{{ album.release_date|date:"Y"|default:"Unknown" }}</p>
+            </div>
+        </a>
+    </div>
+{% endfor %}

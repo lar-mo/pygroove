@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyGroove - Spin Your Collection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'vinyl-purple': '#9333ea',
+                        'vinyl-teal': '#14b8a6',
+                        'vinyl-orange': '#f97316',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-black text-white min-h-screen">
+    <header class="bg-gray-900 border-b border-gray-800 sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="{% url 'home' %}" class="flex items-center gap-2 text-2xl font-bold">
+                <span class="text-4xl">💿</span>
+                <span class="bg-gradient-to-r from-vinyl-purple via-vinyl-teal to-vinyl-orange bg-clip-text text-transparent">PyGroove</span>
+            </a>
+            <nav class="flex gap-6 text-gray-300">
+                <a href="{% url 'home' %}" class="hover:text-vinyl-teal transition-colors">Home</a>
+                <a href="{% url 'collection' %}" class="hover:text-vinyl-purple transition-colors">My Collection</a>
+                <a href="{% url 'cart' %}" class="hover:text-vinyl-orange transition-colors relative">
+                    Cart
+                    {% if cart_item_count > 0 %}
+                    <span class="absolute -top-2 -right-3 bg-vinyl-orange text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                        {{ cart_item_count }}
+                    </span>
+                    {% endif %}
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-gray-900 border-t border-gray-800 mt-12 py-6 text-center text-gray-500">
+        <p>&copy; 2025 PyGroove - Spin Your Collection, Share Your Groove</p>
+    </footer>
+</body>
+</html>

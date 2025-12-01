@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="mb-8">
+    <h2 class="text-4xl font-bold mb-6 bg-gradient-to-r from-vinyl-purple to-vinyl-teal bg-clip-text text-transparent">My Collection</h2>
+    
+    <form method="get" class="flex flex-col md:flex-row gap-4 bg-gray-900 p-4 rounded-lg border border-gray-800" id="filter-form">
+        <input type="text" name="q" placeholder="Search albums..." 
+               class="flex-1 bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700 focus:border-vinyl-purple focus:outline-none transition-colors">
+        <select name="genre" 
+                class="bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700 focus:border-vinyl-teal focus:outline-none transition-colors">
+            <option value="">All Genres</option>
+            {% for genre in genres %}
+                <option value="{{ genre.name }}">{{ genre.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" 
+                class="bg-gradient-to-r from-vinyl-purple to-vinyl-teal px-6 py-2 rounded-lg text-white font-bold hover:scale-105 transform transition-all">
+            Filter
+        </button>
+    </form>
+</div>
+
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6" id="album-grid">
+    {% include 'partials/album_cards.html' %}
+</div>
+
+<div id="loading" style="display: none; text-align: center; padding: 20px;">Loading more albums...</div>
+
+<script>
+let page = 1;
+let loading = false;
+let hasMore = true;
+
+// Infinite scroll
+window.addEventListener('scroll', function() {
+    if (loading || !hasMore) return;
+    
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight;
+    const clientHeight = document.documentElement.clientHeight;
+    
+    if (scrollTop + clientHeight >= scrollHeight - 100) {
+        loadMore();
+    }
+});
+
+function loadMore() {
+    loading = true;
+    document.getElementById('loading').style.display = 'block';
+    
+    page++;
+    const params = new URLSearchParams(window.location.search);
+    params.set('page', page);
+    
+    fetch('/collection/ajax/?' + params.toString())
+        .then(response => response.json())
+        .then(data => {
+            if (data.html.trim() === '') {
+                hasMore = false;
+            } else {
+                document.getElementById('album-grid').insertAdjacentHTML('beforeend', data.html);
+            }
+            loading = false;
+            document.getElementById('loading').style.display = 'none';
+        })
+        .catch(error => {
+            console.error('Error loading more albums:', error);
+            loading = false;
+            document.getElementById('loading').style.display = 'none';
+        });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <!-- Back button -->
+    <a href="{% url 'collection' %}" class="inline-block mb-6 text-vinyl-teal hover:text-vinyl-purple transition-colors">
+        ← Back to Collection
+    </a>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Album Cover -->
+        <div class="bg-gray-900 rounded-lg overflow-hidden border border-gray-800 p-6">
+            {% if album.cover_image %}
+                <img src="{{ album.cover_image.url }}" alt="{{ album.title }}" 
+                     class="w-full rounded-lg shadow-2xl">
+            {% else %}
+                <img src="/media/no_art.jpg" alt="No Cover" 
+                     class="w-full rounded-lg shadow-2xl">
+            {% endif %}
+        </div>
+
+        <!-- Album Info -->
+        <div>
+            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-vinyl-purple to-vinyl-teal bg-clip-text text-transparent">
+                {{ album.title }}
+            </h1>
+            
+            <div class="space-y-3 text-lg mb-6">
+                <div>
+                    <span class="text-gray-400">Artist:</span>
+                    <a href="{% url 'artist_detail' album.artist.id %}" class="text-vinyl-teal hover:text-vinyl-purple transition-colors font-bold ml-2">
+                        {{ album.artist.name }}
+                    </a>
+                </div>
+                
+                {% if album.genre %}
+                <div>
+                    <span class="text-gray-400">Genre:</span>
+                    <span class="text-white ml-2">{{ album.genre.name }}</span>
+                </div>
+                {% endif %}
+                
+                {% if album.release_date %}
+                <div>
+                    <span class="text-gray-400">Released:</span>
+                    <span class="text-white ml-2">{{ album.release_date|date:"Y" }}</span>
+                </div>
+                {% endif %}
+                
+                {% if album.record_label %}
+                <div>
+                    <span class="text-gray-400">Label:</span>
+                    <span class="text-white ml-2">{{ album.record_label.name }}</span>
+                </div>
+                {% endif %}
+                
+                <div>
+                    <span class="text-gray-400">Discs:</span>
+                    <span class="text-white ml-2">{{ album.number_of_discs }}</span>
+                </div>
+            </div>
+
+            {% if album.description %}
+            <div class="bg-gray-900 rounded-lg p-4 border border-gray-800 mb-6">
+                <p class="text-gray-300">{{ album.description }}</p>
+            </div>
+            {% endif %}
+
+            <!-- Add to Cart Button -->
+            {% if in_cart %}
+                <button type="button" disabled
+                        class="bg-gray-700 px-8 py-4 rounded-lg text-gray-400 font-bold text-lg cursor-not-allowed w-full md:w-auto">
+                    ✓ Added
+                </button>
+            {% else %}
+                <form action="{% url 'add_to_cart' album.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" 
+                            class="bg-gradient-to-r from-vinyl-purple to-vinyl-teal px-8 py-4 rounded-lg text-white font-bold text-lg hover:scale-105 transform transition-all shadow-lg w-full md:w-auto">
+                        🛒 Add to Cart
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Tracklist -->
+    {% if album.tracks.all %}
+    <div class="mt-12">
+        <h2 class="text-3xl font-bold mb-6">Tracklist</h2>
+        <div class="bg-gray-900 rounded-lg border border-gray-800 divide-y divide-gray-800">
+            {% for track in album.tracks.all %}
+            <div class="px-6 py-3 hover:bg-gray-800 transition-colors flex items-center gap-4">
+                <span class="text-vinyl-teal font-bold w-8">{{ track.track_number }}</span>
+                <span class="text-white flex-1">{{ track.title }}</span>
+                {% if track.duration %}
+                <span class="text-gray-400 text-sm">{{ track.duration }}</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

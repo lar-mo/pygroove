@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <h1 class="text-5xl font-bold mb-8 bg-gradient-to-r from-vinyl-purple to-vinyl-teal bg-clip-text text-transparent">
+        Checkout
+    </h1>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Order Summary -->
+        <div class="bg-gray-900 rounded-lg border border-gray-800 p-6 h-fit">
+            <h2 class="text-2xl font-bold text-white mb-4">Order Summary</h2>
+            <div class="space-y-4">
+                {% for item in cart.items.all %}
+                <div class="flex items-center gap-4 pb-4 border-b border-gray-800 last:border-0">
+                    <div class="w-16 h-16 flex-shrink-0">
+                        {% if item.album.cover_image %}
+                            <img src="{{ item.album.cover_image.url }}" alt="{{ item.album.title }}"
+                                 class="w-full h-full object-cover rounded">
+                        {% else %}
+                            <img src="/media/no_art.jpg" alt="No Cover"
+                                 class="w-full h-full object-cover rounded">
+                        {% endif %}
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-white font-semibold">{{ item.album.title }}</p>
+                        <p class="text-sm text-gray-400">{{ item.album.artist.name }}</p>
+                    </div>
+                    <div class="text-gray-400 text-sm">
+                        x{{ item.quantity }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-gray-700">
+                <p class="text-gray-400 text-sm">
+                    Total Items: <span class="text-white font-semibold">{{ cart.items.count }}</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Checkout Form -->
+        <div class="bg-gray-900 rounded-lg border border-gray-800 p-6">
+            <h2 class="text-2xl font-bold text-white mb-6">Shipping Information</h2>
+
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+
+                <div>
+                    <label for="id_name" class="block text-sm font-medium text-gray-300 mb-2">Name</label>
+                    <input type="text" name="name" id="id_name" required
+                           class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-vinyl-purple focus:border-transparent"
+                           placeholder="Your Name">
+                </div>
+
+                <div>
+                    <label for="id_email" class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                    <input type="email" name="email" id="id_email" required
+                           class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-vinyl-purple focus:border-transparent"
+                           placeholder="your@email.com">
+                </div>
+
+                <div>
+                    <label for="id_mailing_address" class="block text-sm font-medium text-gray-300 mb-2">Mailing Address</label>
+                    <textarea name="mailing_address" id="id_mailing_address" rows="4" required
+                              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-vinyl-purple focus:border-transparent"
+                              placeholder="Street Address&#10;City, State ZIP&#10;Country"></textarea>
+                </div>
+
+                <div>
+                    <label for="id_message" class="block text-sm font-medium text-gray-300 mb-2">Message (Optional)</label>
+                    <textarea name="message" id="id_message" rows="3"
+                              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-vinyl-purple focus:border-transparent"
+                              placeholder="Any special requests or notes..."></textarea>
+                </div>
+
+                <div class="flex gap-4 pt-4">
+                    <a href="{% url 'cart' %}"
+                       class="flex-1 bg-gray-800 hover:bg-gray-700 text-white px-6 py-4 rounded-lg font-bold text-center transition-colors">
+                        ← Back to Cart
+                    </a>
+                    <button type="submit"
+                            class="flex-1 bg-gradient-to-r from-vinyl-purple to-vinyl-teal px-6 py-4 rounded-lg text-white font-bold hover:scale-105 transform transition-all shadow-lg">
+                        Submit Request
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
