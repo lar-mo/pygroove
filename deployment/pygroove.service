@@ -1,0 +1,22 @@
+[Unit]
+Description=PyGroove Django Application
+After=network.target
+
+[Service]
+Type=notify
+User=lar_mo
+Group=lar_mo
+WorkingDirectory=/home/lar_mo/pygroove.lar-mo.com/pygroove
+Environment="PATH=/home/lar_mo/pygroove.lar-mo.com/venv/bin"
+ExecStart=/home/lar_mo/pygroove.lar-mo.com/venv/bin/gunicorn \
+    --config /home/lar_mo/pygroove.lar-mo.com/pygroove/deployment/gunicorn.conf.py \
+    pygroove.wsgi:application
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=default.target
