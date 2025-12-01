@@ -4,8 +4,6 @@ After=network.target
 
 [Service]
 Type=notify
-User=lar_mo
-Group=lar_mo
 WorkingDirectory=/home/lar_mo/pygroove.lar-mo.com/pygroove
 Environment="PATH=/home/lar_mo/pygroove.lar-mo.com/venv/bin"
 ExecStart=/home/lar_mo/pygroove.lar-mo.com/venv/bin/gunicorn \
