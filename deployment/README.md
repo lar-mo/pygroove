@@ -7,12 +7,13 @@ Complete guide for deploying PyGroove to Dreamhost VPS.
 - **Domain**: pygroove.lar-mo.com
 - **Port**: 8002
 - **VPS Path**: `/home/lar_mo/pygroove.lar-mo.com/`
+- **SSH Alias**: `dhvps` (configured in `~/.ssh/config`)
 - **Python**: 3.10.12
 
 ## Prerequisites
 
 - Dreamhost VPS account
-- SSH access configured
+- SSH access configured (alias: `dhvps`)
 - Subdomain `pygroove.lar-mo.com` created in Dreamhost panel
 
 ## Deployment Steps
@@ -25,13 +26,13 @@ From your local machine:
 cd /Users/larrymoiola/Code/GitHub/pygroove
 rsync -avz --exclude='venv' --exclude='*.pyc' --exclude='__pycache__' \
   --exclude='db.sqlite3' --exclude='media' --exclude='.git' \
-  . lar_mo@vps54748.dreamhostps.com:/home/lar_mo/pygroove.lar-mo.com/pygroove/
+  . dhvps:/home/lar_mo/pygroove.lar-mo.com/pygroove/
 ```
 
 ### 2. SSH into VPS
 
 ```bash
-ssh lar_mo@vps54748.dreamhostps.com
+ssh dhvps
 cd /home/lar_mo/pygroove.lar-mo.com
 ```
 
@@ -84,7 +85,7 @@ If you have existing album covers and artist images:
 ```bash
 # From local machine
 rsync -avz /Users/larrymoiola/Code/GitHub/pygroove/media/ \
-  lar_mo@vps54748.dreamhostps.com:/home/lar_mo/pygroove.lar-mo.com/pygroove/media/
+  dhvps:/home/lar_mo/pygroove.lar-mo.com/pygroove/media/
 ```
 
 ### 7. Collect Static Files
@@ -209,7 +210,7 @@ When you push changes to GitHub:
 
 ```bash
 # SSH into VPS
-ssh lar_mo@vps54748.dreamhostps.com
+ssh dhvps
 cd /home/lar_mo/pygroove.lar-mo.com/pygroove
 
 # Pull latest changes
