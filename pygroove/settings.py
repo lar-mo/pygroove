@@ -126,8 +126,15 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # For collectstatic in production
+
+# Media files (user uploads: album covers, artist images)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# WhiteNoise configuration for serving static and media files
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_AUTOREFRESH = True  # Only in development
+WHITENOISE_STATIC_PREFIX = '/static/'
 
 # Only use STATICFILES_DIRS if you have a 'static' folder with additional files
 # STATICFILES_DIRS = [BASE_DIR / 'static']
