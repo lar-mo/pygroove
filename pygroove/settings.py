@@ -146,20 +146,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # Email Configuration
-# For development, use console backend to print emails to terminal
-# For production, configure SMTP settings
+# Use console backend in development, SMTP in production
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.dreamhost.com'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = secrets.get('EMAIL_HOST_USER', '')
+    EMAIL_HOST_PASSWORD = secrets.get('EMAIL_HOST_PASSWORD', '')
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-# When ready for production, uncomment and configure these:
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'  # or your SMTP server
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'your-email@gmail.com'
-# EMAIL_HOST_PASSWORD = 'your-app-password'
-
-DEFAULT_FROM_EMAIL = 'pygroove@example.com'
+DEFAULT_FROM_EMAIL = secrets.get('EMAIL_HOST_USER', 'pygroove@lar-mo.com')
 COLLECTOR_EMAIL = secrets.get('COLLECTOR_EMAIL', 'phpcds@aretemm.net')
 
 # Discogs API
