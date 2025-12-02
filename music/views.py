@@ -279,3 +279,19 @@ def artist_albums_ajax(request, pk):
 
     html = render_to_string('partials/album_cards.html', {'albums': albums}, request=request)
     return JsonResponse({'html': html})
+
+
+# -------------------------
+# Redirect Views (No Slug)
+# -------------------------
+
+def album_detail_no_slug(request, pk):
+    """Redirect old URLs without slugs to new slug-based URLs"""
+    album = get_object_or_404(Album, pk=pk)
+    return redirect('album_detail', pk=album.pk, slug=album.slug, permanent=True)
+
+
+def artist_detail_no_slug(request, pk):
+    """Redirect old URLs without slugs to new slug-based URLs"""
+    artist = get_object_or_404(Artist, pk=pk)
+    return redirect('artist_detail', pk=artist.pk, slug=artist.slug, permanent=True)

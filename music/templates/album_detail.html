@@ -27,7 +27,7 @@
             <div class="space-y-3 text-lg mb-6">
                 <div>
                     <span class="text-gray-400">Artist:</span>
-                    <a href="{% url 'artist_detail' album.artist.id %}" class="text-vinyl-teal hover:text-vinyl-purple transition-colors font-bold ml-2">
+                    <a href="{% url 'artist_detail' album.artist.id album.artist.slug %}" class="text-vinyl-teal hover:text-vinyl-purple transition-colors font-bold ml-2">
                         {{ album.artist.name }}
                     </a>
                 </div>

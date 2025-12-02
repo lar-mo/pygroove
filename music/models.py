@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.text import slugify
 
 class Genre(models.Model):
     name = models.CharField(max_length=30, unique=True)
@@ -17,9 +18,15 @@ class RecordLabel(models.Model):
 
 class Artist(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(blank=True)
     bio = models.TextField(blank=True)
     website = models.URLField(max_length=200, blank=True)
     image = models.ImageField(upload_to='artist_images/', blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super(Artist, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -27,6 +34,7 @@ class Artist(models.Model):
 
 class Album(models.Model):
     title = models.CharField(max_length=100)
+    slug = models.SlugField(blank=True)
     artist = models.ForeignKey(Artist, on_delete=models.CASCADE, related_name='albums')
     genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True)
     release_date = models.DateField(blank=True, null=True)
@@ -34,6 +42,11 @@ class Album(models.Model):
     record_label = models.ForeignKey(RecordLabel, on_delete=models.SET_NULL, null=True)
     cover_image = models.ImageField(upload_to='album_covers/', blank=True, null=True)
     description = models.TextField(blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super(Album, self).save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.title} ({self.artist.name})"

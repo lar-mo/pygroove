@@ -4,8 +4,15 @@ from . import views
 urlpatterns = [
     path('', views.HomeView.as_view(), name='home'),
     path('collection/', views.CollectionView.as_view(), name='collection'),
-    path('album/<int:pk>/', views.AlbumDetailView.as_view(), name='album_detail'),
-    path('artist/<int:pk>/', views.ArtistDetailView.as_view(), name='artist_detail'),
+    
+    # Slug-based URLs
+    path('album/<int:pk>/<slug:slug>/', views.AlbumDetailView.as_view(), name='album_detail'),
+    path('artist/<int:pk>/<slug:slug>/', views.ArtistDetailView.as_view(), name='artist_detail'),
+    
+    # Fallback URLs without slugs (for old links)
+    path('album/<int:pk>/', views.album_detail_no_slug, name='album_detail_no_slug'),
+    path('artist/<int:pk>/', views.artist_detail_no_slug, name='artist_detail_no_slug'),
+    
     path('cart/', views.cart_view, name='cart'),
     path('checkout/', views.CheckoutView.as_view(), name='checkout'),
     path('checkout/success/', views.HomeView.as_view(template_name="checkout_success.html"), name='checkout_success'),

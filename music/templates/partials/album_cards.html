@@ -1,6 +1,6 @@
 {% for album in albums %}
     <div class="group relative bg-gray-900 rounded-lg overflow-hidden border border-gray-800 hover:border-vinyl-purple transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-vinyl-purple/20">
-        <a href="{% url 'album_detail' album.id %}" class="block">
+        <a href="{% url 'album_detail' album.id album.slug %}" class="block">
             <div class="aspect-square overflow-hidden bg-gray-800">
                 {% if album.cover_image %}
                     <img src="{{ album.cover_image.url }}" alt="{{ album.title }}" 
