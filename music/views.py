@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.core.paginator import Paginator
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import Album, Artist, Genre, RecordLabel, Cart, CartItem, Checkout
+from .models import Album, Artist, Genre, Cart, CartItem
 from .forms import CheckoutForm
 import uuid
 
