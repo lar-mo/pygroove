@@ -55,8 +55,8 @@ class Command(BaseCommand):
         
         elif options['missing_only']:
             # Update albums without covers or tracks
-            albums = Album.objects.filter(cover_image='') | Album.objects.filter(tracks__isnull=True)
-            albums = albums.distinct()
+            from django.db.models import Q
+            albums = Album.objects.filter(Q(cover_image='') | Q(tracks__isnull=True)).distinct()
             total = albums.count()
             self.stdout.write(f"Updating {total} albums missing data...")
             
