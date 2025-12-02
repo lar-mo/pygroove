@@ -8,5 +8,6 @@ urlpatterns = [
     path('', include('music.urls')),  # <-- points to your app
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Serve media files in both development and production
+# In production, these are served by WhiteNoise/Gunicorn
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
