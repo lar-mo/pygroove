@@ -1,5 +1,6 @@
 import discogs_client
 import requests
+import time
 from django.core.management.base import BaseCommand
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
@@ -50,6 +51,7 @@ class Command(BaseCommand):
             for i, album in enumerate(albums, 1):
                 self.stdout.write(f"[{i}/{total}] Processing: {album.artist.name} - {album.title}")
                 self.update_album_from_discogs(album, d)
+                time.sleep(1.5)  # Rate limit: ~40 requests/min (well under 60/min limit)
         
         elif options['missing_only']:
             # Update albums without covers or tracks
@@ -61,6 +63,7 @@ class Command(BaseCommand):
             for i, album in enumerate(albums, 1):
                 self.stdout.write(f"[{i}/{total}] Processing: {album.artist.name} - {album.title}")
                 self.update_album_from_discogs(album, d)
+                time.sleep(1.5)  # Rate limit: ~40 requests/min (well under 60/min limit)
         
         else:
             self.stdout.write(self.style.WARNING("Please specify --album-id, --all, or --missing-only"))
