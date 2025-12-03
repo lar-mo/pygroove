@@ -53,10 +53,14 @@ class Command(BaseCommand):
         Clean up Discogs markup from bio text:
         - Remove [a=Artist Name] tags (keep just the artist name)
         - Remove [url=...]text[/url] tags (keep just the text)
-        - Add paragraph breaks for double newlines
+        - Remove [aXXXXX] numeric artist IDs
+        - Normalize line endings and paragraph breaks
         """
         if not text:
             return text
+        
+        # Normalize line endings (convert \r\n to \n)
+        text = text.replace('\r\n', '\n').replace('\r', '\n')
         
         # Remove [a=Artist (id)] - extract artist name without ID
         # Example: [a=King Diamond (2)] -> King Diamond
@@ -66,12 +70,25 @@ class Command(BaseCommand):
         # Example: [a=Mercyful Fate] -> Mercyful Fate
         text = re.sub(r'\[a=([^\]]+)\]', r'\1', text)
         
+        # Remove [aXXXXX] - numeric artist IDs without names
+        # Example: [a151718] -> (removed)
+        text = re.sub(r'\[a\d+\]', '', text)
+        
         # Remove [url=...]text[/url] - keep just the text
         # Example: [url=https://example.com]Click Here[/url] -> Click Here
         text = re.sub(r'\[url=[^\]]+\]([^\[]+)\[/url\]', r'\1', text)
         
-        # Convert double newlines to paragraph breaks
-        # This helps with readability
+        # Remove [l=Label] - label references
+        # Example: [l=Metalheadz] -> Metalheadz
+        text = re.sub(r'\[l=([^\]]+)\]', r'\1', text)
+        
+        # Remove [r=Release ID] - release references
+        text = re.sub(r'\[r=?\d*\]', '', text)
+        
+        # Normalize multiple spaces
+        text = re.sub(r'  +', ' ', text)
+        
+        # Preserve double newlines (paragraph breaks) but normalize to exactly 2
         text = re.sub(r'\n\n+', '\n\n', text)
         
         return text.strip()
