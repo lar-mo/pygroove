@@ -43,8 +43,10 @@
                     <img src="{{ artist.image.url }}" alt="{{ artist.name }}" 
                          class="w-full rounded-lg shadow-2xl grayscale hover:grayscale-0 transition-all duration-300">
                 {% else %}
-                    <div class="aspect-square bg-gray-800 rounded-lg flex items-center justify-center">
-                        <span class="text-6xl">🎤</span>
+                    <div class="aspect-square bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg flex items-center justify-center">
+                        <svg class="w-32 h-32 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
+                        </svg>
                     </div>
                 {% endif %}
             </div>
