@@ -4,18 +4,27 @@
     <h2 class="text-4xl font-bold mb-6 bg-gradient-to-r from-vinyl-purple to-vinyl-teal bg-clip-text text-transparent">My Collection</h2>
     
     <form method="get" class="flex flex-col md:flex-row gap-4 bg-gray-900 p-4 rounded-lg border border-gray-800" id="filter-form">
-        <input type="text" name="q" placeholder="Search albums..." 
+        <input type="text" name="q" placeholder="Search albums..." value="{{ request.GET.q }}"
                class="flex-1 bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700 focus:border-vinyl-purple focus:outline-none transition-colors">
         <select name="genre" 
                 class="bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700 focus:border-vinyl-teal focus:outline-none transition-colors">
             <option value="">All Genres</option>
             {% for genre in genres %}
-                <option value="{{ genre.name }}">{{ genre.name }}</option>
+                <option value="{{ genre.name }}" {% if request.GET.genre == genre.name %}selected{% endif %}>{{ genre.name }}</option>
             {% endfor %}
+        </select>
+        <select name="sort" 
+                class="bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700 focus:border-vinyl-orange focus:outline-none transition-colors">
+            <option value="-id" {% if request.GET.sort == '-id' or not request.GET.sort %}selected{% endif %}>Recently Added</option>
+            <option value="artist" {% if request.GET.sort == 'artist' %}selected{% endif %}>Artist (A-Z)</option>
+            <option value="title" {% if request.GET.sort == 'title' %}selected{% endif %}>Album Title (A-Z)</option>
+            <option value="-release_date" {% if request.GET.sort == '-release_date' %}selected{% endif %}>Release Date (Newest)</option>
+            <option value="release_date" {% if request.GET.sort == 'release_date' %}selected{% endif %}>Release Date (Oldest)</option>
+            <option value="genre" {% if request.GET.sort == 'genre' %}selected{% endif %}>Genre (A-Z)</option>
         </select>
         <button type="submit" 
                 class="bg-gradient-to-r from-vinyl-purple to-vinyl-teal px-6 py-2 rounded-lg text-white font-bold hover:scale-105 transform transition-all">
-            Filter
+            Apply
         </button>
     </form>
 </div>

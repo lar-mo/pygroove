@@ -36,6 +36,7 @@ class CollectionView(ListView):
         artist = self.request.GET.get('artist')
         label = self.request.GET.get('label')
         search = self.request.GET.get('q')
+        sort = self.request.GET.get('sort', '-id')
 
         if genre:
             queryset = queryset.filter(genre__name__icontains=genre)
@@ -45,6 +46,20 @@ class CollectionView(ListView):
             queryset = queryset.filter(record_label__name__icontains=label)
         if search:
             queryset = queryset.filter(title__icontains=search)
+
+        # Apply sorting
+        if sort == 'artist':
+            queryset = queryset.order_by('artist__name', 'title')
+        elif sort == 'title':
+            queryset = queryset.order_by('title')
+        elif sort == '-release_date':
+            queryset = queryset.order_by('-release_date', '-id')
+        elif sort == 'release_date':
+            queryset = queryset.order_by('release_date', 'id')
+        elif sort == 'genre':
+            queryset = queryset.order_by('genre__name', 'artist__name')
+        else:  # Default: -id (Recently Added)
+            queryset = queryset.order_by('-id')
 
         return queryset
     
@@ -262,6 +277,7 @@ def collection_ajax(request):
     artist = request.GET.get('artist')
     label = request.GET.get('label')
     search = request.GET.get('q')
+    sort = request.GET.get('sort', '-id')
     page = request.GET.get('page', 1)
 
     queryset = Album.objects.select_related('artist', 'genre', 'record_label')
@@ -274,6 +290,20 @@ def collection_ajax(request):
         queryset = queryset.filter(record_label__name__icontains=label)
     if search:
         queryset = queryset.filter(title__icontains=search)
+
+    # Apply sorting
+    if sort == 'artist':
+        queryset = queryset.order_by('artist__name', 'title')
+    elif sort == 'title':
+        queryset = queryset.order_by('title')
+    elif sort == '-release_date':
+        queryset = queryset.order_by('-release_date', '-id')
+    elif sort == 'release_date':
+        queryset = queryset.order_by('release_date', 'id')
+    elif sort == 'genre':
+        queryset = queryset.order_by('genre__name', 'artist__name')
+    else:  # Default: -id (Recently Added)
+        queryset = queryset.order_by('-id')
 
     paginator = Paginator(queryset, 20)
     albums = paginator.get_page(page)
