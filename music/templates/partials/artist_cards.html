@@ -1,0 +1,25 @@
+{% for artist in artists %}
+<a href="{% url 'artist_detail' pk=artist.pk slug=artist.slug %}" 
+   class="group bg-gray-900 rounded-lg overflow-hidden border border-gray-800 hover:border-vinyl-purple transition-all hover:scale-105 transform">
+    <div class="aspect-square bg-gray-800 relative overflow-hidden">
+        {% if artist.image %}
+            <img src="{{ artist.image.url }}" alt="{{ artist.name }}" 
+                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+        {% else %}
+            <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900">
+                <svg class="w-20 h-20 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
+                </svg>
+            </div>
+        {% endif %}
+    </div>
+    <div class="p-4">
+        <h3 class="font-bold text-lg text-white truncate group-hover:text-vinyl-teal transition-colors">
+            {{ artist.name }}
+        </h3>
+        <p class="text-sm text-gray-400">
+            {{ artist.album_count }} album{{ artist.album_count|pluralize }}
+        </p>
+    </div>
+</a>
+{% endfor %}

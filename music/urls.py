@@ -25,5 +25,6 @@ urlpatterns = [
 
     # AJAX endpoints
     path('collection/ajax/', views.collection_ajax, name='collection_ajax'),
+    path('artists/ajax/', views.artists_ajax, name='artists_ajax'),
     path('artist/<int:pk>/albums/', views.artist_albums_ajax, name='artist_albums_ajax'),
 ]

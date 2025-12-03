@@ -286,6 +286,28 @@ def collection_ajax(request):
     return JsonResponse({'html': html})
 
 
+def artists_ajax(request):
+    search = request.GET.get('q')
+    page = request.GET.get('page', 1)
+
+    queryset = Artist.objects.annotate(
+        album_count=models.Count('albums')
+    ).filter(album_count__gt=0).order_by('name')
+    
+    if search:
+        queryset = queryset.filter(name__icontains=search)
+
+    paginator = Paginator(queryset, 24)
+    artists = paginator.get_page(page)
+
+    # Return empty HTML if we're beyond the last page or no results
+    if int(page) > paginator.num_pages or not artists:
+        return JsonResponse({'html': ''})
+
+    html = render_to_string('partials/artist_cards.html', {'artists': artists}, request=request)
+    return JsonResponse({'html': html})
+
+
 def artist_albums_ajax(request, pk):
     artist = get_object_or_404(Artist, pk=pk)
     filter_type = request.GET.get('filter', 'all')

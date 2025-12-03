@@ -3,7 +3,7 @@
 <div class="mb-8">
     <h2 class="text-4xl font-bold mb-6 bg-gradient-to-r from-vinyl-purple to-vinyl-teal bg-clip-text text-transparent">Artists</h2>
     
-    <form method="get" class="flex gap-4 bg-gray-900 p-4 rounded-lg border border-gray-800">
+    <form method="get" class="flex gap-4 bg-gray-900 p-4 rounded-lg border border-gray-800" id="search-form">
         <input type="text" name="q" placeholder="Search artists..." value="{{ request.GET.q }}"
                class="flex-1 bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700 focus:border-vinyl-purple focus:outline-none transition-colors">
         <button type="submit" 
@@ -13,66 +13,54 @@
     </form>
 </div>
 
-<div class="mb-4 text-gray-400">
-    Showing {{ artists|length }} artist{{ artists|length|pluralize }} {% if request.GET.q %}matching "{{ request.GET.q }}"{% endif %}
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6" id="artist-grid">
+    {% include 'partials/artist_cards.html' %}
 </div>
 
-<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
-    {% for artist in artists %}
-    <a href="{% url 'artist_detail' pk=artist.pk slug=artist.slug %}" 
-       class="group bg-gray-900 rounded-lg overflow-hidden border border-gray-800 hover:border-vinyl-purple transition-all hover:scale-105 transform">
-        <div class="aspect-square bg-gray-800 relative overflow-hidden">
-            {% if artist.image %}
-                <img src="{{ artist.image.url }}" alt="{{ artist.name }}" 
-                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
-            {% else %}
-                <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900">
-                    <svg class="w-20 h-20 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
-                    </svg>
-                </div>
-            {% endif %}
-        </div>
-        <div class="p-4">
-            <h3 class="font-bold text-lg text-white truncate group-hover:text-vinyl-teal transition-colors">
-                {{ artist.name }}
-            </h3>
-            <p class="text-sm text-gray-400">
-                {{ artist.album_count }} album{{ artist.album_count|pluralize }}
-            </p>
-        </div>
-    </a>
-    {% empty %}
-    <div class="col-span-full text-center py-12 text-gray-500">
-        <p class="text-xl mb-2">No artists found</p>
-        {% if request.GET.q %}
-        <p>Try adjusting your search</p>
-        <a href="{% url 'artists_list' %}" class="text-vinyl-teal hover:underline">Clear search</a>
-        {% endif %}
-    </div>
-    {% endfor %}
-</div>
+<div id="loading" style="display: none; text-align: center; padding: 20px;">Loading more artists...</div>
 
-<!-- Pagination -->
-{% if is_paginated %}
-<div class="mt-8 flex justify-center gap-2">
-    {% if page_obj.has_previous %}
-        <a href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
-           class="px-4 py-2 bg-gray-800 rounded-lg hover:bg-vinyl-purple transition-colors">First</a>
-        <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
-           class="px-4 py-2 bg-gray-800 rounded-lg hover:bg-vinyl-purple transition-colors">Previous</a>
-    {% endif %}
+<script>
+let page = 1;
+let loading = false;
+let hasMore = true;
+
+// Infinite scroll
+window.addEventListener('scroll', function() {
+    if (loading || !hasMore) return;
     
-    <span class="px-4 py-2 bg-gray-900 rounded-lg border border-gray-700">
-        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-    </span>
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight;
+    const clientHeight = document.documentElement.clientHeight;
     
-    {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
-           class="px-4 py-2 bg-gray-800 rounded-lg hover:bg-vinyl-purple transition-colors">Next</a>
-        <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
-           class="px-4 py-2 bg-gray-800 rounded-lg hover:bg-vinyl-purple transition-colors">Last</a>
-    {% endif %}
-</div>
-{% endif %}
+    if (scrollTop + clientHeight >= scrollHeight - 100) {
+        loadMore();
+    }
+});
+
+function loadMore() {
+    loading = true;
+    document.getElementById('loading').style.display = 'block';
+    
+    page++;
+    const params = new URLSearchParams(window.location.search);
+    params.set('page', page);
+    
+    fetch('/artists/ajax/?' + params.toString())
+        .then(response => response.json())
+        .then(data => {
+            if (data.html.trim() === '') {
+                hasMore = false;
+            } else {
+                document.getElementById('artist-grid').insertAdjacentHTML('beforeend', data.html);
+            }
+            loading = false;
+            document.getElementById('loading').style.display = 'none';
+        })
+        .catch(error => {
+            console.error('Error loading more artists:', error);
+            loading = false;
+            document.getElementById('loading').style.display = 'none';
+        });
+}
+</script>
 {% endblock %}
