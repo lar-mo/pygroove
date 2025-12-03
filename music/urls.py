@@ -4,6 +4,7 @@ from . import views
 urlpatterns = [
     path('', views.HomeView.as_view(), name='home'),
     path('collection/', views.CollectionView.as_view(), name='collection'),
+    path('artists/', views.ArtistsListView.as_view(), name='artists_list'),
     
     # Slug-based URLs
     path('album/<int:pk>/<slug:slug>/', views.AlbumDetailView.as_view(), name='album_detail'),

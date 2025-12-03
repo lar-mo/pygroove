@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.core.paginator import Paginator
 from django.core.mail import send_mail
 from django.conf import settings
+from django.db import models
 from .models import Album, Artist, Genre, Cart, CartItem
 from .forms import CheckoutForm
 import uuid
@@ -73,6 +74,24 @@ class AlbumDetailView(DetailView):
         
         context['in_cart'] = in_cart
         return context
+
+
+class ArtistsListView(ListView):
+    model = Artist
+    template_name = 'artist_list.html'
+    context_object_name = 'artists'
+    paginate_by = 24
+
+    def get_queryset(self):
+        queryset = Artist.objects.annotate(
+            album_count=models.Count('albums')
+        ).filter(album_count__gt=0).order_by('name')
+        
+        search = self.request.GET.get('q')
+        if search:
+            queryset = queryset.filter(name__icontains=search)
+        
+        return queryset
 
 
 class ArtistDetailView(DetailView):

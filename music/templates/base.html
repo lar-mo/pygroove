@@ -31,6 +31,7 @@
             <nav class="flex gap-6 text-gray-300">
                 <a href="{% url 'home' %}" class="hover:text-vinyl-teal transition-colors">Home</a>
                 <a href="{% url 'collection' %}" class="hover:text-vinyl-purple transition-colors">My Collection</a>
+                <a href="{% url 'artists_list' %}" class="hover:text-vinyl-teal transition-colors">Artists</a>
                 <a href="{% url 'cart' %}" class="hover:text-vinyl-orange transition-colors relative">
                     Cart
                     {% if cart_item_count > 0 %}
