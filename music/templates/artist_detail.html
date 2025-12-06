@@ -70,7 +70,7 @@
             {% if artist.bio %}
             <div class="bg-gray-900 rounded-lg p-6 border border-gray-800">
                 <h2 class="text-2xl font-bold mb-4 text-vinyl-teal">Biography</h2>
-                <div class="text-gray-300 leading-relaxed prose prose-invert max-w-none">
+                <div class="text-gray-300 leading-relaxed prose prose-invert max-w-none text-justify">
                     {{ artist.bio|markdown }}
                 </div>
             </div>
@@ -95,7 +95,7 @@
                             {% endif %}
                         </div>
                         <div class="p-3">
-                            <h3 class="font-bold text-white truncate group-hover:text-vinyl-teal transition-colors">{{ album.title }}</h3>
+                            <h3 class="font-bold text-white truncate group-hover:text-vinyl-teal transition-colors leading-normal pb-1">{{ album.title }}</h3>
                             <p class="text-xs text-gray-500">{{ album.release_date|date:"Y"|default:"Unknown" }}</p>
                             {% if album.genre %}
                             <p class="text-xs text-gray-400">{{ album.genre.name }}</p>
