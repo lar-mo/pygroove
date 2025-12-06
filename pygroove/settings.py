@@ -30,6 +30,7 @@ SECRET_KEY = secrets['SECRET_KEY']
 DEBUG = secrets.get('DEBUG', True)
 
 ALLOWED_HOSTS = secrets.get('ALLOWED_HOSTS', [])
+CSRF_TRUSTED_ORIGINS = secrets.get('CSRF_TRUSTED_ORIGINS', [])
 
 
 # Application definition
