@@ -20,7 +20,7 @@
 
         <!-- Album Info -->
         <div>
-            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-vinyl-purple to-vinyl-teal bg-clip-text text-transparent">
+            <h1 class="text-5xl font-bold mb-6 pb-2 bg-gradient-to-r from-vinyl-purple to-vinyl-teal bg-clip-text text-transparent leading-tight">
                 {{ album.title }}
             </h1>
             
@@ -89,11 +89,11 @@
         <h2 class="text-3xl font-bold mb-6">Tracklist</h2>
         <div class="bg-gray-900 rounded-lg border border-gray-800 divide-y divide-gray-800">
             {% for track in album.tracks.all %}
-            <div class="px-6 py-3 hover:bg-gray-800 transition-colors flex items-center gap-4">
-                <span class="text-vinyl-teal font-bold w-8">{{ track.track_number }}</span>
-                <span class="text-white flex-1">{{ track.title }}</span>
+            <div class="px-6 py-4 hover:bg-gray-800 transition-colors flex items-center gap-4">
+                <span class="text-vinyl-teal font-bold w-8 leading-relaxed">{{ track.track_number }}</span>
+                <span class="text-white flex-1 leading-relaxed">{{ track.title }}</span>
                 {% if track.duration %}
-                <span class="text-gray-400 text-sm">{{ track.duration }}</span>
+                <span class="text-gray-400 text-sm leading-relaxed">{{ track.duration }}</span>
                 {% endif %}
             </div>
             {% endfor %}

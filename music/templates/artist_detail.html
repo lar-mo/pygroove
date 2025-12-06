@@ -94,8 +94,8 @@
                                      class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                             {% endif %}
                         </div>
-                        <div class="p-3">
-                            <h3 class="font-bold text-white truncate group-hover:text-vinyl-teal transition-colors leading-normal pb-1">{{ album.title }}</h3>
+                        <div class="p-3 pb-4">
+                            <h3 class="font-bold text-white truncate group-hover:text-vinyl-teal transition-colors leading-relaxed">{{ album.title }}</h3>
                             <p class="text-xs text-gray-500">{{ album.release_date|date:"Y"|default:"Unknown" }}</p>
                             {% if album.genre %}
                             <p class="text-xs text-gray-400">{{ album.genre.name }}</p>

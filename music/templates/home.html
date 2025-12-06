@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="flex flex-col items-center justify-center min-h-[60vh] text-center">
-    <h1 class="text-6xl font-bold mb-6 bg-gradient-to-r from-vinyl-purple via-vinyl-teal to-vinyl-orange bg-clip-text text-transparent">
+    <h1 class="text-6xl font-bold mb-8 bg-gradient-to-r from-vinyl-purple via-vinyl-teal to-vinyl-orange bg-clip-text text-transparent leading-tight pb-2">
         Spin your collection.<br>Share your groove.
     </h1>
     <p class="text-xl text-gray-400 mb-8 max-w-2xl">
@@ -32,9 +32,9 @@
                                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                         {% endif %}
                     </div>
-                    <div class="p-2">
-                        <h3 class="font-bold text-sm text-white truncate">{{ album.title }}</h3>
-                        <p class="text-xs text-gray-400 truncate">{{ album.artist.name }}</p>
+                    <div class="p-2 pb-3">
+                        <h3 class="font-bold text-sm text-white truncate leading-relaxed">{{ album.title }}</h3>
+                        <p class="text-xs text-gray-400 truncate leading-relaxed">{{ album.artist.name }}</p>
                     </div>
                 </a>
             </div>
