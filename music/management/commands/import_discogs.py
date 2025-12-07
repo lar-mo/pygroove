@@ -71,16 +71,25 @@ class Command(BaseCommand):
     def update_album_from_discogs(self, album, discogs_client):
         """Search Discogs and update album data"""
         try:
-            # Search for the album
+            # Search for the album - prefer master release for canonical tracklist
             query = f"{album.artist.name} {album.title}"
-            results = discogs_client.search(query, type='release')
             
-            if not results:
-                self.stdout.write(self.style.WARNING(f"  No results found for: {query}"))
-                return
+            # First try to find master release (canonical version)
+            master_results = discogs_client.search(query, type='master')
             
-            # Get the first result
-            release = results[0]
+            if master_results:
+                # Get the main release from the master
+                master = master_results[0]
+                release = master.main_release
+                self.stdout.write(self.style.SUCCESS(f"  → Found master release"))
+            else:
+                # Fall back to regular release search
+                release_results = discogs_client.search(query, type='release')
+                if not release_results:
+                    self.stdout.write(self.style.WARNING(f"  No results found for: {query}"))
+                    return
+                release = release_results[0]
+                self.stdout.write(self.style.WARNING(f"  → Using specific release (no master found)"))
             
             # Download and save cover image
             if release.images and not album.cover_image:
