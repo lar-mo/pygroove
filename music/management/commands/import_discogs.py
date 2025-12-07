@@ -17,6 +17,11 @@ class Command(BaseCommand):
             help='Specific album ID to update'
         )
         parser.add_argument(
+            '--discogs-id',
+            type=int,
+            help='Specific Discogs release ID to use (requires --album-id)'
+        )
+        parser.add_argument(
             '--all',
             action='store_true',
             help='Update all albums in database'
@@ -38,7 +43,8 @@ class Command(BaseCommand):
             # Update single album
             try:
                 album = Album.objects.get(id=options['album_id'])
-                self.update_album_from_discogs(album, d)
+                discogs_release_id = options.get('discogs_id')
+                self.update_album_from_discogs(album, d, discogs_release_id)
             except Album.DoesNotExist:
                 self.stdout.write(self.style.ERROR(f"Album with ID {options['album_id']} not found"))
         
@@ -68,28 +74,33 @@ class Command(BaseCommand):
         else:
             self.stdout.write(self.style.WARNING("Please specify --album-id, --all, or --missing-only"))
 
-    def update_album_from_discogs(self, album, discogs_client):
+    def update_album_from_discogs(self, album, discogs_client, discogs_release_id=None):
         """Search Discogs and update album data"""
         try:
-            # Search for the album - prefer master release for canonical tracklist
-            query = f"{album.artist.name} {album.title}"
-            
-            # First try to find master release (canonical version)
-            master_results = discogs_client.search(query, type='master')
-            
-            if master_results:
-                # Get the main release from the master
-                master = master_results[0]
-                release = master.main_release
-                self.stdout.write(self.style.SUCCESS(f"  → Found master release"))
+            # If specific Discogs release ID provided, use it directly
+            if discogs_release_id:
+                release = discogs_client.release(discogs_release_id)
+                self.stdout.write(self.style.SUCCESS(f"  → Using specified Discogs release ID: {discogs_release_id}"))
             else:
-                # Fall back to regular release search
-                release_results = discogs_client.search(query, type='release')
-                if not release_results:
-                    self.stdout.write(self.style.WARNING(f"  No results found for: {query}"))
-                    return
-                release = release_results[0]
-                self.stdout.write(self.style.WARNING(f"  → Using specific release (no master found)"))
+                # Search for the album - prefer master release for canonical tracklist
+                query = f"{album.artist.name} {album.title}"
+                
+                # First try to find master release (canonical version)
+                master_results = discogs_client.search(query, type='master')
+                
+                if master_results:
+                    # Get the main release from the master
+                    master = master_results[0]
+                    release = master.main_release
+                    self.stdout.write(self.style.SUCCESS(f"  → Found master release"))
+                else:
+                    # Fall back to regular release search
+                    release_results = discogs_client.search(query, type='release')
+                    if not release_results:
+                        self.stdout.write(self.style.WARNING(f"  No results found for: {query}"))
+                        return
+                    release = release_results[0]
+                    self.stdout.write(self.style.WARNING(f"  → Using specific release (no master found)"))
             
             # Download and save cover image
             if release.images and not album.cover_image:
