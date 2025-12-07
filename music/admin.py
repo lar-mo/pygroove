@@ -12,6 +12,7 @@ class GenreAdmin(admin.ModelAdmin):
 class RecordLabelAdmin(admin.ModelAdmin):
     list_display = ['name']
     search_fields = ['name']
+    ordering = ['name']
 
 
 @admin.register(Artist)
@@ -27,6 +28,13 @@ class AlbumAdmin(admin.ModelAdmin):
     search_fields = ['title', 'artist__name']
     list_filter = ['genre', 'artist', 'record_label', 'release_date']
     date_hierarchy = 'release_date'
+    
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "artist":
+            kwargs["queryset"] = Artist.objects.order_by('name')
+        elif db_field.name == "record_label":
+            kwargs["queryset"] = RecordLabel.objects.order_by('name')
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 @admin.register(Track)
