@@ -22,12 +22,20 @@ class ArtistAdmin(admin.ModelAdmin):
     list_filter = ['name']
 
 
+class TrackInline(admin.TabularInline):
+    model = Track
+    extra = 5  # Number of empty track forms to display
+    fields = ['track_number', 'title', 'duration']
+    ordering = ['track_number']
+
+
 @admin.register(Album)
 class AlbumAdmin(admin.ModelAdmin):
     list_display = ['title', 'artist', 'genre', 'release_date', 'record_label', 'number_of_discs']
     search_fields = ['title', 'artist__name']
     list_filter = ['genre', 'artist', 'record_label', 'release_date']
     date_hierarchy = 'release_date'
+    inlines = [TrackInline]
     
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "artist":
