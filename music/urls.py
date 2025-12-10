@@ -3,8 +3,11 @@ from . import views
 
 urlpatterns = [
     path('', views.HomeView.as_view(), name='home'),
-    path('collection/', views.CollectionView.as_view(), name='collection'),
+    path('albums/', views.CollectionView.as_view(), name='albums'),
     path('artists/', views.ArtistsListView.as_view(), name='artists_list'),
+    
+    # Redirect old collection URL to albums
+    path('collection/', views.collection_redirect, name='collection'),
     
     # Slug-based URLs
     path('album/<int:pk>/<slug:slug>/', views.AlbumDetailView.as_view(), name='album_detail'),
@@ -24,7 +27,7 @@ urlpatterns = [
     path('cart/update/<int:item_id>/', views.update_cart_item, name='update_cart_item'),
 
     # AJAX endpoints
-    path('collection/ajax/', views.collection_ajax, name='collection_ajax'),
+    path('albums/ajax/', views.collection_ajax, name='albums_ajax'),
     path('artists/ajax/', views.artists_ajax, name='artists_ajax'),
     path('artist/<int:pk>/albums/', views.artist_albums_ajax, name='artist_albums_ajax'),
 ]

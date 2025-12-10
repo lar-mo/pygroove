@@ -131,9 +131,14 @@
 </script>
 <div class="max-w-[1600px] mx-auto px-4">
     <!-- Back button -->
-    <a href="{% url 'collection' %}" class="inline-block mb-6 text-vinyl-teal hover:text-vinyl-purple transition-colors">
-        ← Back to Collection
-    </a>
+    <!-- Breadcrumb Navigation -->
+    <nav class="breadcrumb mb-6 text-gray-400" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem;">
+        <a href="{% url 'home' %}" class="hover:text-vinyl-teal transition-colors">Home</a>
+        <span>›</span>
+        <a href="{% url 'albums' %}" class="hover:text-vinyl-teal transition-colors">Albums</a>
+        <span>›</span>
+        <span class="text-white">{{ album.title }}</span>
+    </nav>
 
     <div class="three-col-layout">
         <!-- Column 1: Album Cover + Related Albums -->

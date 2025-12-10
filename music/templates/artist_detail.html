@@ -28,84 +28,260 @@
     .footnote-backref {
         display: none;
     }
-</style>
-<div class="max-w-7xl mx-auto">
-    <!-- Back button -->
-    <a href="{% url 'collection' %}" class="inline-block mb-6 text-vinyl-teal hover:text-vinyl-purple transition-colors">
-        ← Back to Collection
-    </a>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-        <!-- Artist Image -->
-        <div class="md:col-span-1">
-            <div class="bg-gray-900 rounded-lg overflow-hidden border border-gray-800 p-6">
-                {% if artist.image %}
-                    <img src="{{ artist.image.url }}" alt="{{ artist.name }}" 
-                         class="w-full rounded-lg shadow-2xl grayscale hover:grayscale-0 transition-all duration-300">
-                {% else %}
-                    <div class="aspect-square bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg flex items-center justify-center">
-                        <svg class="w-32 h-32 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
-                        </svg>
+    /* Fixed artist image size */
+    .artist-image-container {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    /* 3-column grid layout */
+    .three-col-layout {
+        display: grid;
+        grid-template-columns: 400px 1fr 320px;
+        gap: 2rem;
+        align-items: start;
+    }
+
+    /* Artist image column - contains image and tabbed content */
+    .artist-image-column {
+        grid-column: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    /* Middle column content */
+    .middle-content {
+        grid-column: 2;
+    }
+
+    /* Sidebar */
+    .sidebar-content {
+        grid-column: 3;
+    }
+
+    /* Tab styles */
+    .tab-button {
+        padding: 0.5rem 1rem;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s;
+    }
+    
+    .tab-button.active {
+        border-bottom-color: #a855f7;
+        color: #a855f7;
+    }
+    
+    .tab-content {
+        display: none;
+    }
+    
+    .tab-content.active {
+        display: block;
+    }
+
+    /* Smaller thumbnails */
+    .thumbnail-small {
+        width: 100%;
+        max-width: 120px;
+    }
+
+    /* Breadcrumb styles */
+    .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+    }
+
+    /* Responsive: stack on smaller screens */
+    @media (max-width: 1200px) {
+        .three-col-layout {
+            grid-template-columns: 1fr;
+        }
+        .artist-image-container {
+            max-width: 100%;
+        }
+    }
+</style>
+<script>
+    function switchTab(tabName) {
+        // Hide all tab contents
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        
+        // Remove active class from all buttons
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.classList.remove('active');
+        });
+        
+        // Show selected tab content
+        document.getElementById(tabName).classList.add('active');
+        
+        // Add active class to clicked button
+        event.target.classList.add('active');
+    }
+</script>
+<div class="max-w-[1600px] mx-auto px-4">
+    <!-- Breadcrumb Navigation -->
+    <nav class="breadcrumb mb-6 text-gray-400">
+        <a href="{% url 'home' %}" class="hover:text-vinyl-teal transition-colors">Home</a>
+        <span>›</span>
+        <a href="{% url 'artists_list' %}" class="hover:text-vinyl-teal transition-colors">Artists</a>
+        <span>›</span>
+        <span class="text-white">{{ artist.name }}</span>
+    </nav>
+
+    <div class="three-col-layout">
+        <!-- Column 1: Artist Image + Tabbed Content (Albums/Similar Artists) -->
+        <div class="artist-image-column">
+            <!-- Artist Image -->
+            <div class="artist-image-container">
+                <div class="bg-gray-900 rounded-lg overflow-hidden border border-gray-800 p-6">
+                    {% if artist.image %}
+                        <img src="{{ artist.image.url }}" alt="{{ artist.name }}" 
+                             class="w-full rounded-lg shadow-2xl grayscale hover:grayscale-0 transition-all duration-300">
+                    {% else %}
+                        <div class="aspect-square bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg flex items-center justify-center">
+                            <svg class="w-32 h-32 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
+                            </svg>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Tabbed Section: Albums & Similar Artists -->
+            <div>
+                <!-- Tab Headers -->
+                <div class="flex gap-4 border-b border-gray-800 mb-4">
+                    <button onclick="switchTab('albums')" class="tab-button active text-gray-300 hover:text-white text-sm">
+                        Albums
+                    </button>
+                    {% if similar_artists %}
+                    <button onclick="switchTab('similar-artists')" class="tab-button text-gray-300 hover:text-white text-sm">
+                        Similar Artists
+                    </button>
+                    {% endif %}
+                </div>
+
+                <!-- Tab Content: Albums -->
+                <div id="albums" class="tab-content active">
+                    <div class="flex gap-3 flex-wrap">
+                        {% for album in artist.albums.all %}
+                        <a href="{% url 'album_detail' album.id album.slug %}" class="group thumbnail-small">
+                            <div class="bg-gray-900 rounded-lg overflow-hidden border border-gray-800 hover:border-vinyl-teal transition-all">
+                                {% if album.cover_image %}
+                                    <img src="{{ album.cover_image.url }}" alt="{{ album.title }}" class="w-full aspect-square object-cover">
+                                {% else %}
+                                    <img src="/media/no_art.jpg" alt="No Cover" class="w-full aspect-square object-cover">
+                                {% endif %}
+                                <div class="p-2">
+                                    <div class="text-white text-xs font-medium group-hover:text-vinyl-teal transition-colors truncate">{{ album.title }}</div>
+                                    <div class="text-gray-400 text-[10px] truncate">{{ album.release_date|date:"Y"|default:"" }}</div>
+                                </div>
+                            </div>
+                        </a>
+                        {% empty %}
+                        <p class="text-gray-500 text-sm">No albums found.</p>
+                        {% endfor %}
                     </div>
+                </div>
+
+                <!-- Tab Content: Similar Artists -->
+                {% if similar_artists %}
+                <div id="similar-artists" class="tab-content">
+                    <div class="flex gap-3 flex-wrap">
+                        {% for similar in similar_artists %}
+                        <a href="{% url 'artist_detail' similar.id similar.slug %}" class="group thumbnail-small">
+                            <div class="bg-gray-900 rounded-lg overflow-hidden border border-gray-800 hover:border-vinyl-teal transition-all">
+                                {% if similar.image %}
+                                    <img src="{{ similar.image.url }}" alt="{{ similar.name }}" class="w-full aspect-square object-cover grayscale group-hover:grayscale-0 transition-all">
+                                {% else %}
+                                    <div class="w-full aspect-square bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                                        <svg class="w-12 h-12 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
+                                        </svg>
+                                    </div>
+                                {% endif %}
+                                <div class="p-2">
+                                    <div class="text-white text-xs font-medium group-hover:text-vinyl-teal transition-colors truncate">{{ similar.name }}</div>
+                                </div>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
                 {% endif %}
             </div>
-            
-            {% if artist.website %}
-            <div class="mt-4 bg-gray-900 rounded-lg p-4 border border-gray-800">
-                <h3 class="text-sm text-gray-400 mb-2">Website</h3>
-                <a href="{{ artist.website }}" target="_blank" class="text-vinyl-teal hover:text-vinyl-purple transition-colors break-all">
-                    {{ artist.website|cut:"https://"|cut:"http://" }}
-                </a>
-            </div>
-            {% endif %}
         </div>
 
-        <!-- Artist Info -->
-        <div class="md:col-span-2">
-            <h1 class="text-6xl font-bold mb-6 bg-gradient-to-r from-vinyl-purple to-vinyl-teal bg-clip-text text-transparent">
-                {{ artist.name }}
-            </h1>
-            
+        <!-- Column 2: Artist Name & Biography -->
+        <div class="middle-content space-y-6">
+            <!-- Artist Name -->
+            <div>
+                <h1 class="text-5xl font-bold mb-2 pb-2 bg-gradient-to-r from-vinyl-purple to-vinyl-teal bg-clip-text text-transparent leading-tight">
+                    {{ artist.name }}
+                </h1>
+            </div>
+
+            <!-- Biography -->
             {% if artist.bio %}
-            <div class="bg-gray-900 rounded-lg p-6 border border-gray-800">
-                <h2 class="text-2xl font-bold mb-4 text-vinyl-teal">Biography</h2>
-                <div class="text-gray-300 leading-relaxed prose prose-invert max-w-none text-justify">
+            <div>
+                <h3 class="text-xl font-bold mb-4 text-vinyl-teal">Biography</h3>
+                <div class="text-gray-300 leading-relaxed prose prose-invert max-w-none text-justify text-sm">
                     {{ artist.bio|markdown }}
                 </div>
             </div>
             {% endif %}
         </div>
-    </div>
 
-    <!-- Albums Grid -->
-    <div class="mb-8">
-        <h2 class="text-3xl font-bold mb-6">Albums</h2>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {% for album in artist.albums.all %}
-                <div class="group relative bg-gray-900 rounded-lg overflow-hidden border border-gray-800 hover:border-vinyl-purple transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-vinyl-purple/20">
-                    <a href="{% url 'album_detail' album.id album.slug %}" class="block">
-                        <div class="aspect-square overflow-hidden bg-gray-800">
-                            {% if album.cover_image %}
-                                <img src="{{ album.cover_image.url }}" alt="{{ album.title }}" 
-                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
-                            {% else %}
-                                <img src="/media/no_art.jpg" alt="No Cover" 
-                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
-                            {% endif %}
-                        </div>
-                        <div class="p-3 pb-4">
-                            <h3 class="font-bold text-white truncate group-hover:text-vinyl-teal transition-colors leading-relaxed">{{ album.title }}</h3>
-                            <p class="text-xs text-gray-500">{{ album.release_date|date:"Y"|default:"Unknown" }}</p>
-                            {% if album.genre %}
-                            <p class="text-xs text-gray-400">{{ album.genre.name }}</p>
-                            {% endif %}
-                        </div>
+        <!-- Column 3: Metadata Sidebar -->
+        <div class="sidebar-content space-y-6">
+            <!-- Artist Info Card -->
+            {% if artist.website %}
+            <div class="bg-gray-900 rounded-lg border border-gray-800 p-6">
+                <h3 class="text-xl font-bold mb-4 text-vinyl-teal">Artist Info</h3>
+                <div>
+                    <div class="text-gray-400 text-sm">Website</div>
+                    <a href="{{ artist.website }}" target="_blank" rel="noopener noreferrer" class="text-white hover:text-vinyl-teal transition-colors text-sm break-all">
+                        {{ artist.website|cut:"https://"|cut:"http://" }}
                     </a>
                 </div>
-            {% empty %}
-                <p class="text-gray-500 col-span-full text-center">No albums found for this artist.</p>
-            {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Quick Facts (placeholder for layout) -->
+            <div class="bg-gray-900 rounded-lg border border-gray-800 p-6">
+                <h3 class="text-xl font-bold mb-4 text-vinyl-teal">Quick Facts</h3>
+                <ul class="text-gray-300 text-sm space-y-2 list-disc list-inside">
+                    <li>Active since 1995</li>
+                    <li>Based in London, UK</li>
+                    <li>15 studio albums</li>
+                    <li>Multiple Grammy nominations</li>
+                    <li>Influences: Jazz, Electronic</li>
+                </ul>
+            </div>
+
+            <!-- Sharing -->
+            <div class="bg-gray-900 rounded-lg border border-gray-800 p-6">
+                <h3 class="text-xl font-bold mb-4 text-vinyl-teal">Sharing</h3>
+                <div class="space-y-3">
+                    <!-- Share Links (placeholders) -->
+                    <div>
+                        <button class="text-gray-500 text-sm cursor-not-allowed" disabled>
+                            Copy Link <span class="text-xs">(coming soon)</span>
+                        </button>
+                    </div>
+                    <div>
+                        <button class="text-gray-500 text-sm cursor-not-allowed" disabled>
+                            Copy Embed Code <span class="text-xs">(coming soon)</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

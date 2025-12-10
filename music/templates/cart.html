@@ -46,7 +46,7 @@
 
         <!-- Checkout Button -->
         <div class="flex justify-between items-center">
-            <a href="{% url 'collection' %}" class="text-vinyl-teal hover:text-vinyl-purple transition-colors">
+            <a href="{% url 'albums' %}" class="text-vinyl-teal hover:text-vinyl-purple transition-colors">
                 ← Continue Browsing
             </a>
             <a href="{% url 'checkout' %}" 
@@ -58,9 +58,9 @@
     {% else %}
         <div class="bg-gray-900 rounded-lg border border-gray-800 p-12 text-center">
             <p class="text-gray-400 text-xl mb-6">Your cart is empty</p>
-            <a href="{% url 'collection' %}" 
+            <a href="{% url 'albums' %}" 
                class="inline-block bg-gradient-to-r from-vinyl-purple to-vinyl-teal px-6 py-3 rounded-lg text-white font-bold hover:scale-105 transform transition-all">
-                Browse Collection
+                Browse Albums
             </a>
         </div>
     {% endif %}

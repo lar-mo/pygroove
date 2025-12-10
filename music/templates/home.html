@@ -8,7 +8,7 @@
         Browse your personal vinyl and CD collection. Curate albums to share with friends. 
         Keep the music alive, one disc at a time.
     </p>
-    <a href="{% url 'collection' %}" class="bg-gradient-to-r from-vinyl-purple to-vinyl-teal px-8 py-4 rounded-lg text-white font-bold text-lg hover:scale-105 transform transition-all shadow-lg hover:shadow-vinyl-purple/50">
+    <a href="{% url 'albums' %}" class="bg-gradient-to-r from-vinyl-purple to-vinyl-teal px-8 py-4 rounded-lg text-white font-bold text-lg hover:scale-105 transform transition-all shadow-lg hover:shadow-vinyl-purple/50">
         Browse Collection
     </a>
 </div>
@@ -17,7 +17,7 @@
 <div class="mt-16">
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-3xl font-bold">Recently Added</h2>
-        <a href="{% url 'collection' %}" class="text-vinyl-teal hover:text-vinyl-purple transition-colors">View All →</a>
+        <a href="{% url 'albums' %}" class="text-vinyl-teal hover:text-vinyl-purple transition-colors">View All →</a>
     </div>
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {% for album in recent_albums %}

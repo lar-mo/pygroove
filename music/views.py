@@ -137,6 +137,31 @@ class ArtistDetailView(DetailView):
     model = Artist
     template_name = 'artist_detail.html'
     context_object_name = 'artist'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Get genres from this artist's albums
+        artist_genres = Genre.objects.filter(
+            album__artist=self.object
+        ).distinct()
+        
+        # Similar artists: Artists who have albums in the same genres
+        # Exclude current artist, limit to 6
+        if artist_genres.exists():
+            context['similar_artists'] = Artist.objects.filter(
+                albums__genre__in=artist_genres
+            ).exclude(
+                id=self.object.id
+            ).annotate(
+                album_count=models.Count('albums', distinct=True)
+            ).filter(
+                album_count__gt=0
+            ).distinct()[:6]
+        else:
+            context['similar_artists'] = []
+        
+        return context
 
 
 def cart_view(request):
@@ -390,3 +415,8 @@ def artist_detail_no_slug(request, pk):
     """Redirect old URLs without slugs to new slug-based URLs"""
     artist = get_object_or_404(Artist, pk=pk)
     return redirect('artist_detail', pk=artist.pk, slug=artist.slug, permanent=True)
+
+
+def collection_redirect(request):
+    """Redirect old /collection/ URL to new /albums/ URL"""
+    return redirect('albums', permanent=True)
