@@ -88,6 +88,30 @@ class AlbumDetailView(DetailView):
                 pass
         
         context['in_cart'] = in_cart
+        
+        # Calculate rows needed for 2-column tracklist grid
+        track_count = self.object.tracks.count()
+        context['track_rows'] = (track_count + 1) // 2  # Ceiling division
+        
+        # Related albums: More by this artist (exclude current album, limit to 6)
+        context['more_by_artist'] = Album.objects.filter(
+            artist=self.object.artist
+        ).exclude(
+            id=self.object.id
+        ).select_related('artist')[:6]
+        
+        # Related albums: Same genre (exclude current album and same artist, limit to 6)
+        if self.object.genre:
+            context['similar_albums'] = Album.objects.filter(
+                genre=self.object.genre
+            ).exclude(
+                id=self.object.id
+            ).exclude(
+                artist=self.object.artist
+            ).select_related('artist')[:6]
+        else:
+            context['similar_albums'] = []
+        
         return context
 
 

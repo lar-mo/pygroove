@@ -1,0 +1,44 @@
+# Sensitive files
+secrets.json
+*.env
+.env.*
+
+# Development files
+db.sqlite3
+*.sqlite3
+*.db
+
+# Version control
+.git/
+.gitignore
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Logs
+*.log
+
+# macOS
+.DS_Store
+
+# Development scripts
+*.sh
+create_*.sh
+
+# Design files
+design/
+
+# Media (if large)
+# media/
+
+# JSON data files (likely not needed in production)
+cds.json
+genre_desc.json
+
+# Documentation
+GITHUB_ISSUES.md
