@@ -20,6 +20,26 @@ class ArtistAdmin(admin.ModelAdmin):
     list_display = ['name', 'website']
     search_fields = ['name']
     list_filter = ['name']
+    
+    # Help text for Quick Facts field
+    help_texts = {
+        'quick_facts': '''
+            Enter Quick Facts as JSON. Example:
+            {
+              "Active Since": "1995",
+              "Based In": "London, UK",
+              "Album Count": "15",
+              "Awards": "Multiple Grammy nominations",
+              "Influences": "Jazz, Electronic"
+            }
+        '''
+    }
+    
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if 'quick_facts' in form.base_fields:
+            form.base_fields['quick_facts'].help_text = self.help_texts['quick_facts']
+        return form
 
 
 class TrackInline(admin.TabularInline):
