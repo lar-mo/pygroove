@@ -253,17 +253,17 @@
             </div>
             {% endif %}
 
-            <!-- Quick Facts (placeholder for layout) -->
+            <!-- Quick Facts -->
+            {% if artist.quick_facts %}
             <div class="bg-gray-900 rounded-lg border border-gray-800 p-6">
                 <h3 class="text-xl font-bold mb-4 text-vinyl-teal">Quick Facts</h3>
                 <ul class="text-gray-300 text-sm space-y-2 list-disc list-inside">
-                    <li>Active since 1995</li>
-                    <li>Based in London, UK</li>
-                    <li>15 studio albums</li>
-                    <li>Multiple Grammy nominations</li>
-                    <li>Influences: Jazz, Electronic</li>
+                    {% for key, value in artist.quick_facts.items %}
+                        <li>{{ key|title }}: {{ value }}</li>
+                    {% endfor %}
                 </ul>
             </div>
+            {% endif %}
 
             <!-- Sharing -->
             <div class="bg-gray-900 rounded-lg border border-gray-800 p-6">

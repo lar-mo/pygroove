@@ -22,6 +22,7 @@ class Artist(models.Model):
     bio = models.TextField(blank=True)
     website = models.URLField(max_length=200, blank=True)
     image = models.ImageField(upload_to='artist_images/', blank=True, null=True)
+    quick_facts = models.JSONField(blank=True, null=True, help_text="Quick facts about the artist (JSON format)")
 
     def save(self, *args, **kwargs):
         if not self.slug:
