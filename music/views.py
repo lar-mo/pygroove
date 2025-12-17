@@ -65,7 +65,14 @@ class CollectionView(ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['genres'] = Genre.objects.all().order_by('name')
+        # Only show genres that have at least one album
+        context['genres'] = Genre.objects.annotate(
+            album_count=models.Count('album')
+        ).filter(album_count__gt=0).order_by('name')
+        
+        # Pass filter parameters for empty state message
+        context['current_genre'] = self.request.GET.get('genre', '')
+        
         return context
 
 

@@ -257,7 +257,7 @@
             {% if artist.quick_facts %}
             <div class="bg-gray-900 rounded-lg border border-gray-800 p-6">
                 <h3 class="text-xl font-bold mb-4 text-vinyl-teal">Quick Facts</h3>
-                <ul class="text-gray-300 text-sm space-y-2 list-disc list-inside">
+                <ul class="text-gray-300 text-sm space-y-2 list-disc list-outside pl-5">
                     {% for key, value in artist.quick_facts.items %}
                         <li>{{ key|title }}: {{ value }}</li>
                     {% endfor %}
