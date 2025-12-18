@@ -12,13 +12,24 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import json
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Load secrets from secrets.json
-with open(BASE_DIR / "secrets.json") as f:
-    secrets = json.load(f)
+# Load secrets from secrets.json (if it exists) or environment variables
+secrets_file = BASE_DIR / "secrets.json"
+if secrets_file.exists():
+    with open(secrets_file) as f:
+        secrets = json.load(f)
+else:
+    # Fallback to environment variables for CI/testing
+    secrets = {
+        "SECRET_KEY": os.environ.get("SECRET_KEY", "test-secret-key-for-ci-only"),
+        "DEBUG": os.environ.get("DEBUG", "True") == "True",
+        "ALLOWED_HOSTS": [],
+        "CSRF_TRUSTED_ORIGINS": [],
+    }
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
