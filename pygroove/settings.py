@@ -17,74 +17,74 @@ import json
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load secrets from secrets.json
-with open(BASE_DIR / 'secrets.json') as f:
+with open(BASE_DIR / "secrets.json") as f:
     secrets = json.load(f)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = secrets['SECRET_KEY']
+SECRET_KEY = secrets["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = secrets.get('DEBUG', True)
+DEBUG = secrets.get("DEBUG", True)
 
-ALLOWED_HOSTS = secrets.get('ALLOWED_HOSTS', [])
-CSRF_TRUSTED_ORIGINS = secrets.get('CSRF_TRUSTED_ORIGINS', [])
+ALLOWED_HOSTS = secrets.get("ALLOWED_HOSTS", [])
+CSRF_TRUSTED_ORIGINS = secrets.get("CSRF_TRUSTED_ORIGINS", [])
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'music',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    "music",
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Add WhiteNoise right after SecurityMiddleware
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # Add WhiteNoise right after SecurityMiddleware
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = 'pygroove.urls'
+ROOT_URLCONF = "pygroove.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'music.context_processors.cart_count',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+                "music.context_processors.cart_count",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'pygroove.wsgi.application'
+WSGI_APPLICATION = "pygroove.wsgi.application"
 
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
@@ -94,16 +94,16 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
@@ -111,9 +111,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -125,17 +125,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'  # For collectstatic in production
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"  # For collectstatic in production
 
 # Media files (user uploads: album covers, artist images)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # WhiteNoise configuration for serving static and media files
 WHITENOISE_USE_FINDERS = True
 WHITENOISE_AUTOREFRESH = True  # Only in development
-WHITENOISE_STATIC_PREFIX = '/static/'
+WHITENOISE_STATIC_PREFIX = "/static/"
 
 # Only use STATICFILES_DIRS if you have a 'static' folder with additional files
 # STATICFILES_DIRS = [BASE_DIR / 'static']
@@ -143,23 +143,23 @@ WHITENOISE_STATIC_PREFIX = '/static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # Email Configuration
 # Use console backend in development, SMTP in production
 if DEBUG:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 else:
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = 'smtp.dreamhost.com'
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_HOST = "smtp.dreamhost.com"
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
-    EMAIL_HOST_USER = secrets.get('EMAIL_HOST_USER', '')
-    EMAIL_HOST_PASSWORD = secrets.get('EMAIL_HOST_PASSWORD', '')
+    EMAIL_HOST_USER = secrets.get("EMAIL_HOST_USER", "")
+    EMAIL_HOST_PASSWORD = secrets.get("EMAIL_HOST_PASSWORD", "")
 
-DEFAULT_FROM_EMAIL = secrets.get('EMAIL_HOST_USER', 'pygroove@lar-mo.com')
-COLLECTOR_EMAIL = secrets.get('COLLECTOR_EMAIL', 'phpcds@aretemm.net')
+DEFAULT_FROM_EMAIL = secrets.get("EMAIL_HOST_USER", "pygroove@lar-mo.com")
+COLLECTOR_EMAIL = secrets.get("COLLECTOR_EMAIL", "phpcds@aretemm.net")
 
 # Discogs API
-DISCOGS_TOKEN = secrets.get('DISCOGS_TOKEN', '')
+DISCOGS_TOKEN = secrets.get("DISCOGS_TOKEN", "")
