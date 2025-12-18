@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 
+
 class Genre(models.Model):
     name = models.CharField(max_length=30, unique=True)
     description = models.TextField(blank=True)
@@ -21,7 +22,7 @@ class Artist(models.Model):
     slug = models.SlugField(blank=True)
     bio = models.TextField(blank=True)
     website = models.URLField(max_length=200, blank=True)
-    image = models.ImageField(upload_to='artist_images/', blank=True, null=True)
+    image = models.ImageField(upload_to="artist_images/", blank=True, null=True)
     quick_facts = models.JSONField(blank=True, null=True, help_text="Quick facts about the artist (JSON format)")
 
     def save(self, *args, **kwargs):
@@ -36,12 +37,12 @@ class Artist(models.Model):
 class Album(models.Model):
     title = models.CharField(max_length=100)
     slug = models.SlugField(blank=True)
-    artist = models.ForeignKey(Artist, on_delete=models.CASCADE, related_name='albums')
+    artist = models.ForeignKey(Artist, on_delete=models.CASCADE, related_name="albums")
     genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True)
     release_date = models.DateField(blank=True, null=True)
     number_of_discs = models.PositiveSmallIntegerField(default=1)
     record_label = models.ForeignKey(RecordLabel, on_delete=models.SET_NULL, null=True)
-    cover_image = models.ImageField(upload_to='album_covers/', blank=True, null=True)
+    cover_image = models.ImageField(upload_to="album_covers/", blank=True, null=True)
     description = models.TextField(blank=True)
 
     def save(self, *args, **kwargs):
@@ -54,13 +55,13 @@ class Album(models.Model):
 
 
 class Track(models.Model):
-    album = models.ForeignKey(Album, on_delete=models.CASCADE, related_name='tracks')
+    album = models.ForeignKey(Album, on_delete=models.CASCADE, related_name="tracks")
     title = models.CharField(max_length=100)
     track_number = models.PositiveSmallIntegerField()
     duration = models.CharField(max_length=10, blank=True, null=True, help_text="Track duration (e.g., 4:44)")
 
     class Meta:
-        ordering = ['track_number']
+        ordering = ["track_number"]
 
     def __str__(self):
         return f"{self.track_number}. {self.title}"
@@ -75,7 +76,7 @@ class Cart(models.Model):
 
 
 class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
     album = models.ForeignKey(Album, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
 
@@ -86,7 +87,7 @@ class CartItem(models.Model):
 class Checkout(models.Model):
     cart = models.OneToOneField(Cart, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
-    email = models.EmailField(default='noreply@example.com')
+    email = models.EmailField(default="noreply@example.com")
     mailing_address = models.TextField()
     message = models.TextField(blank=True)
     submitted_at = models.DateTimeField(auto_now_add=True)

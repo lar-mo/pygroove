@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('music', '0003_remove_artist_contact_artist_website'),
+        ("music", "0003_remove_artist_contact_artist_website"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='checkout',
-            name='email',
-            field=models.EmailField(default='noreply@example.com', max_length=254),
+            model_name="checkout",
+            name="email",
+            field=models.EmailField(default="noreply@example.com", max_length=254),
         ),
     ]

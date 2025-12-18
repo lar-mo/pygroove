@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('music', '0005_album_slug_artist_slug'),
+        ("music", "0005_album_slug_artist_slug"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='artist',
-            name='quick_facts',
-            field=models.JSONField(blank=True, help_text='Quick facts about the artist (JSON format)', null=True),
+            model_name="artist",
+            name="quick_facts",
+            field=models.JSONField(blank=True, help_text="Quick facts about the artist (JSON format)", null=True),
         ),
     ]

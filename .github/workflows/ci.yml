@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install flake8 black
+    
+    - name: Run linting with flake8
+      run: |
+        # Stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # Exit-zero treats all errors as warnings. Max line length 120 chars
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics \
+          --exclude=venv,migrations,__pycache__,.git
+    
+    - name: Check code formatting with black
+      run: |
+        black --check --line-length 120 --exclude='/(venv|migrations|\.git)/' .
+    
+    - name: Run tests
+      run: |
+        python manage.py test music
+      env:
+        DJANGO_SETTINGS_MODULE: pygroove.settings

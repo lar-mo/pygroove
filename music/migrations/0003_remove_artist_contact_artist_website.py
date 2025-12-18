@@ -6,17 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('music', '0002_track_duration'),
+        ("music", "0002_track_duration"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='artist',
-            name='contact',
+            model_name="artist",
+            name="contact",
         ),
         migrations.AddField(
-            model_name='artist',
-            name='website',
+            model_name="artist",
+            name="website",
             field=models.URLField(blank=True),
         ),
     ]

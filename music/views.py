@@ -14,29 +14,30 @@ import uuid
 # Core Views
 # -------------------------
 
+
 class HomeView(TemplateView):
-    template_name = 'home.html'
-    
+    template_name = "home.html"
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Get 6 most recently added albums
-        context['recent_albums'] = Album.objects.select_related('artist', 'genre').order_by('-id')[:6]
+        context["recent_albums"] = Album.objects.select_related("artist", "genre").order_by("-id")[:6]
         return context
 
 
 class CollectionView(ListView):
     model = Album
-    template_name = 'collection.html'
-    context_object_name = 'albums'
+    template_name = "collection.html"
+    context_object_name = "albums"
     paginate_by = 20
 
     def get_queryset(self):
-        queryset = Album.objects.select_related('artist', 'genre', 'record_label')
-        genre = self.request.GET.get('genre')
-        artist = self.request.GET.get('artist')
-        label = self.request.GET.get('label')
-        search = self.request.GET.get('q')
-        sort = self.request.GET.get('sort', '-id')
+        queryset = Album.objects.select_related("artist", "genre", "record_label")
+        genre = self.request.GET.get("genre")
+        artist = self.request.GET.get("artist")
+        label = self.request.GET.get("label")
+        search = self.request.GET.get("q")
+        sort = self.request.GET.get("sort", "-id")
 
         if genre:
             queryset = queryset.filter(genre__name__icontains=genre)
@@ -48,170 +49,163 @@ class CollectionView(ListView):
             queryset = queryset.filter(title__icontains=search)
 
         # Apply sorting
-        if sort == 'artist':
-            queryset = queryset.order_by('artist__name', 'title')
-        elif sort == 'title':
-            queryset = queryset.order_by('title')
-        elif sort == '-release_date':
-            queryset = queryset.order_by('-release_date', '-id')
-        elif sort == 'release_date':
-            queryset = queryset.order_by('release_date', 'id')
-        elif sort == 'genre':
-            queryset = queryset.order_by('genre__name', 'artist__name')
+        if sort == "artist":
+            queryset = queryset.order_by("artist__name", "title")
+        elif sort == "title":
+            queryset = queryset.order_by("title")
+        elif sort == "-release_date":
+            queryset = queryset.order_by("-release_date", "-id")
+        elif sort == "release_date":
+            queryset = queryset.order_by("release_date", "id")
+        elif sort == "genre":
+            queryset = queryset.order_by("genre__name", "artist__name")
         else:  # Default: -id (Recently Added)
-            queryset = queryset.order_by('-id')
+            queryset = queryset.order_by("-id")
 
         return queryset
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Only show genres that have at least one album
-        context['genres'] = Genre.objects.annotate(
-            album_count=models.Count('album')
-        ).filter(album_count__gt=0).order_by('name')
-        
+        context["genres"] = (
+            Genre.objects.annotate(album_count=models.Count("album")).filter(album_count__gt=0).order_by("name")
+        )
+
         # Pass filter parameters for empty state message
-        context['current_genre'] = self.request.GET.get('genre', '')
-        
+        context["current_genre"] = self.request.GET.get("genre", "")
+
         return context
 
 
 class AlbumDetailView(DetailView):
     model = Album
-    template_name = 'album_detail.html'
-    context_object_name = 'album'
-    
+    template_name = "album_detail.html"
+    context_object_name = "album"
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Check if this album is already in the cart
-        cookie_id = self.request.COOKIES.get('cart_id')
+        cookie_id = self.request.COOKIES.get("cart_id")
         in_cart = False
-        
+
         if cookie_id:
             try:
                 cart = Cart.objects.get(cookie_id=cookie_id)
                 in_cart = CartItem.objects.filter(cart=cart, album=self.object).exists()
             except Cart.DoesNotExist:
                 pass
-        
-        context['in_cart'] = in_cart
-        
+
+        context["in_cart"] = in_cart
+
         # Calculate rows needed for 2-column tracklist grid
         track_count = self.object.tracks.count()
-        context['track_rows'] = (track_count + 1) // 2  # Ceiling division
-        
+        context["track_rows"] = (track_count + 1) // 2  # Ceiling division
+
         # Related albums: More by this artist (exclude current album, limit to 6)
-        context['more_by_artist'] = Album.objects.filter(
-            artist=self.object.artist
-        ).exclude(
-            id=self.object.id
-        ).select_related('artist')[:6]
-        
+        context["more_by_artist"] = (
+            Album.objects.filter(artist=self.object.artist).exclude(id=self.object.id).select_related("artist")[:6]
+        )
+
         # Related albums: Same genre (exclude current album and same artist, limit to 6)
         if self.object.genre:
-            context['similar_albums'] = Album.objects.filter(
-                genre=self.object.genre
-            ).exclude(
-                id=self.object.id
-            ).exclude(
-                artist=self.object.artist
-            ).select_related('artist')[:6]
+            context["similar_albums"] = (
+                Album.objects.filter(genre=self.object.genre)
+                .exclude(id=self.object.id)
+                .exclude(artist=self.object.artist)
+                .select_related("artist")[:6]
+            )
         else:
-            context['similar_albums'] = []
-        
+            context["similar_albums"] = []
+
         return context
 
 
 class ArtistsListView(ListView):
     model = Artist
-    template_name = 'artist_list.html'
-    context_object_name = 'artists'
+    template_name = "artist_list.html"
+    context_object_name = "artists"
     paginate_by = 24
 
     def get_queryset(self):
-        queryset = Artist.objects.annotate(
-            album_count=models.Count('albums')
-        ).filter(album_count__gt=0).order_by('name')
-        
-        search = self.request.GET.get('q')
+        queryset = (
+            Artist.objects.annotate(album_count=models.Count("albums")).filter(album_count__gt=0).order_by("name")
+        )
+
+        search = self.request.GET.get("q")
         if search:
             queryset = queryset.filter(name__icontains=search)
-        
+
         return queryset
 
 
 class ArtistDetailView(DetailView):
     model = Artist
-    template_name = 'artist_detail.html'
-    context_object_name = 'artist'
-    
+    template_name = "artist_detail.html"
+    context_object_name = "artist"
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        
+
         # Get genres from this artist's albums
-        artist_genres = Genre.objects.filter(
-            album__artist=self.object
-        ).distinct()
-        
+        artist_genres = Genre.objects.filter(album__artist=self.object).distinct()
+
         # Similar artists: Artists who have albums in the same genres
         # Exclude current artist, limit to 6
         if artist_genres.exists():
-            context['similar_artists'] = Artist.objects.filter(
-                albums__genre__in=artist_genres
-            ).exclude(
-                id=self.object.id
-            ).annotate(
-                album_count=models.Count('albums', distinct=True)
-            ).filter(
-                album_count__gt=0
-            ).distinct()[:6]
+            context["similar_artists"] = (
+                Artist.objects.filter(albums__genre__in=artist_genres)
+                .exclude(id=self.object.id)
+                .annotate(album_count=models.Count("albums", distinct=True))
+                .filter(album_count__gt=0)
+                .distinct()[:6]
+            )
         else:
-            context['similar_artists'] = []
-        
+            context["similar_artists"] = []
+
         return context
 
 
 def cart_view(request):
-    cookie_id = request.COOKIES.get('cart_id')
+    cookie_id = request.COOKIES.get("cart_id")
     cart = Cart.objects.filter(cookie_id=cookie_id).first()
-    items = cart.items.select_related('album') if cart else []
-    return render(request, 'cart.html', {'cart': cart, 'items': items})
+    items = cart.items.select_related("album") if cart else []
+    return render(request, "cart.html", {"cart": cart, "items": items})
 
 
 class CheckoutView(FormView):
-    template_name = 'checkout.html'
+    template_name = "checkout.html"
     form_class = CheckoutForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        cookie_id = self.request.COOKIES.get('cart_id')
+        cookie_id = self.request.COOKIES.get("cart_id")
         if cookie_id:
-            context['cart'] = Cart.objects.filter(cookie_id=cookie_id).first()
+            context["cart"] = Cart.objects.filter(cookie_id=cookie_id).first()
         return context
 
     def form_valid(self, form):
-        cookie_id = self.request.COOKIES.get('cart_id')
+        cookie_id = self.request.COOKIES.get("cart_id")
         cart = get_object_or_404(Cart, cookie_id=cookie_id)
         checkout = form.save(commit=False)
         checkout.cart = cart
         checkout.save()
-        
+
         # Send email notifications
         self.send_checkout_emails(checkout, cart)
-        
+
         # Clear the cookie so user gets a fresh cart next time
         # Keep the cart/checkout in database for history
-        response = redirect('checkout_success')
-        response.delete_cookie('cart_id')
-        
+        response = redirect("checkout_success")
+        response.delete_cookie("cart_id")
+
         return response
-    
+
     def send_checkout_emails(self, checkout, cart):
         """Send checkout notification to The Collector and copy to requestor"""
-        
+
         # Build the email body
-        items = cart.items.select_related('album__artist').all()
-        
+        items = cart.items.select_related("album__artist").all()
+
         email_body = f"""PyGroove Album Request
 ======================
 
@@ -233,22 +227,22 @@ Requested Albums:
   Quantity: {item.quantity}
 
 """
-        
+
         email_body += f"""
 Shipping Address:
 -----------------
 {checkout.mailing_address}
 """
-        
+
         if checkout.message:
             email_body += f"""
 Additional Message:
 -------------------
 {checkout.message}
 """
-        
+
         subject = "PyGroove :: Album Request"
-        
+
         # Send to The Collector
         try:
             send_mail(
@@ -258,11 +252,11 @@ Additional Message:
                 recipient_list=[settings.COLLECTOR_EMAIL],
                 fail_silently=False,
             )
-            
+
             # Send copy to requestor
             requestor_subject = f"Copy: {subject}"
             requestor_body = f"This is a copy of your album request to PyGroove:\n\n{email_body}"
-            
+
             send_mail(
                 subject=requestor_subject,
                 message=requestor_body,
@@ -279,16 +273,17 @@ Additional Message:
 # Cart Actions
 # -------------------------
 
+
 def get_cart(request):
-    cookie_id = request.COOKIES.get('cart_id')
-    
+    cookie_id = request.COOKIES.get("cart_id")
+
     if cookie_id:
         cart, created = Cart.objects.get_or_create(cookie_id=cookie_id)
     else:
         # Generate new unique cookie_id
         cookie_id = str(uuid.uuid4())
         cart = Cart.objects.create(cookie_id=cookie_id)
-    
+
     return cart, cookie_id
 
 
@@ -301,8 +296,8 @@ def add_to_cart(request, album_id):
         item.quantity += 1
         item.save()
 
-    response = redirect('cart')
-    response.set_cookie('cart_id', cookie_id, max_age=30*24*60*60)  # 30 days
+    response = redirect("cart")
+    response.set_cookie("cart_id", cookie_id, max_age=30 * 24 * 60 * 60)  # 30 days
     return response
 
 
@@ -310,33 +305,34 @@ def remove_from_cart(request, item_id):
     cart, cookie_id = get_cart(request)
     item = get_object_or_404(CartItem, pk=item_id, cart=cart)
     item.delete()
-    return redirect('cart')
+    return redirect("cart")
 
 
 def update_cart_item(request, item_id):
     cart, cookie_id = get_cart(request)
     item = get_object_or_404(CartItem, pk=item_id, cart=cart)
 
-    if request.method == 'POST':
-        qty = int(request.POST.get('quantity', 1))
+    if request.method == "POST":
+        qty = int(request.POST.get("quantity", 1))
         item.quantity = max(1, qty)
         item.save()
-    return redirect('cart')
+    return redirect("cart")
 
 
 # -------------------------
 # AJAX Endpoints
 # -------------------------
 
-def collection_ajax(request):
-    genre = request.GET.get('genre')
-    artist = request.GET.get('artist')
-    label = request.GET.get('label')
-    search = request.GET.get('q')
-    sort = request.GET.get('sort', '-id')
-    page = request.GET.get('page', 1)
 
-    queryset = Album.objects.select_related('artist', 'genre', 'record_label')
+def collection_ajax(request):
+    genre = request.GET.get("genre")
+    artist = request.GET.get("artist")
+    label = request.GET.get("label")
+    search = request.GET.get("q")
+    sort = request.GET.get("sort", "-id")
+    page = request.GET.get("page", 1)
+
+    queryset = Album.objects.select_related("artist", "genre", "record_label")
 
     if genre:
         queryset = queryset.filter(genre__name__icontains=genre)
@@ -348,38 +344,36 @@ def collection_ajax(request):
         queryset = queryset.filter(title__icontains=search)
 
     # Apply sorting
-    if sort == 'artist':
-        queryset = queryset.order_by('artist__name', 'title')
-    elif sort == 'title':
-        queryset = queryset.order_by('title')
-    elif sort == '-release_date':
-        queryset = queryset.order_by('-release_date', '-id')
-    elif sort == 'release_date':
-        queryset = queryset.order_by('release_date', 'id')
-    elif sort == 'genre':
-        queryset = queryset.order_by('genre__name', 'artist__name')
+    if sort == "artist":
+        queryset = queryset.order_by("artist__name", "title")
+    elif sort == "title":
+        queryset = queryset.order_by("title")
+    elif sort == "-release_date":
+        queryset = queryset.order_by("-release_date", "-id")
+    elif sort == "release_date":
+        queryset = queryset.order_by("release_date", "id")
+    elif sort == "genre":
+        queryset = queryset.order_by("genre__name", "artist__name")
     else:  # Default: -id (Recently Added)
-        queryset = queryset.order_by('-id')
+        queryset = queryset.order_by("-id")
 
     paginator = Paginator(queryset, 20)
     albums = paginator.get_page(page)
 
     # Return empty HTML if we're beyond the last page or no results
     if int(page) > paginator.num_pages or not albums:
-        return JsonResponse({'html': ''})
+        return JsonResponse({"html": ""})
 
-    html = render_to_string('partials/album_cards.html', {'albums': albums}, request=request)
-    return JsonResponse({'html': html})
+    html = render_to_string("partials/album_cards.html", {"albums": albums}, request=request)
+    return JsonResponse({"html": html})
 
 
 def artists_ajax(request):
-    search = request.GET.get('q')
-    page = request.GET.get('page', 1)
+    search = request.GET.get("q")
+    page = request.GET.get("page", 1)
 
-    queryset = Artist.objects.annotate(
-        album_count=models.Count('albums')
-    ).filter(album_count__gt=0).order_by('name')
-    
+    queryset = Artist.objects.annotate(album_count=models.Count("albums")).filter(album_count__gt=0).order_by("name")
+
     if search:
         queryset = queryset.filter(name__icontains=search)
 
@@ -388,42 +382,43 @@ def artists_ajax(request):
 
     # Return empty HTML if we're beyond the last page or no results
     if int(page) > paginator.num_pages or not artists:
-        return JsonResponse({'html': ''})
+        return JsonResponse({"html": ""})
 
-    html = render_to_string('partials/artist_cards.html', {'artists': artists}, request=request)
-    return JsonResponse({'html': html})
+    html = render_to_string("partials/artist_cards.html", {"artists": artists}, request=request)
+    return JsonResponse({"html": html})
 
 
 def artist_albums_ajax(request, pk):
     artist = get_object_or_404(Artist, pk=pk)
-    filter_type = request.GET.get('filter', 'all')
+    filter_type = request.GET.get("filter", "all")
 
     albums = artist.albums.all()
-    if filter_type == 'genre':
-        albums = albums.order_by('genre__name')
-    elif filter_type == 'label':
-        albums = albums.order_by('record_label__name')
+    if filter_type == "genre":
+        albums = albums.order_by("genre__name")
+    elif filter_type == "label":
+        albums = albums.order_by("record_label__name")
 
-    html = render_to_string('partials/album_cards.html', {'albums': albums}, request=request)
-    return JsonResponse({'html': html})
+    html = render_to_string("partials/album_cards.html", {"albums": albums}, request=request)
+    return JsonResponse({"html": html})
 
 
 # -------------------------
 # Redirect Views (No Slug)
 # -------------------------
 
+
 def album_detail_no_slug(request, pk):
     """Redirect old URLs without slugs to new slug-based URLs"""
     album = get_object_or_404(Album, pk=pk)
-    return redirect('album_detail', pk=album.pk, slug=album.slug, permanent=True)
+    return redirect("album_detail", pk=album.pk, slug=album.slug, permanent=True)
 
 
 def artist_detail_no_slug(request, pk):
     """Redirect old URLs without slugs to new slug-based URLs"""
     artist = get_object_or_404(Artist, pk=pk)
-    return redirect('artist_detail', pk=artist.pk, slug=artist.slug, permanent=True)
+    return redirect("artist_detail", pk=artist.pk, slug=artist.slug, permanent=True)
 
 
 def collection_redirect(request):
     """Redirect old /collection/ URL to new /albums/ URL"""
-    return redirect('albums', permanent=True)
+    return redirect("albums", permanent=True)

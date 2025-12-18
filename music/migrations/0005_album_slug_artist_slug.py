@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('music', '0004_checkout_email'),
+        ("music", "0004_checkout_email"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='album',
-            name='slug',
+            model_name="album",
+            name="slug",
             field=models.SlugField(blank=True),
         ),
         migrations.AddField(
-            model_name='artist',
-            name='slug',
+            model_name="artist",
+            name="slug",
             field=models.SlugField(blank=True),
         ),
     ]
