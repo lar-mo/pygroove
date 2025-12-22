@@ -128,6 +128,46 @@
         // Add active class to clicked button
         event.target.classList.add('active');
     }
+
+    // Copy album page link to clipboard
+    function copyAlbumLink() {
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+            showMessage('linkCopiedMessage');
+        }).catch(err => {
+            console.error('Failed to copy link:', err);
+        });
+    }
+
+    // Copy embed code to clipboard
+    function copyEmbedCode() {
+        const albumTitle = "{{ album.title|escapejs }}";
+        const artistName = "{{ album.artist.name|escapejs }}";
+        const albumUrl = window.location.href;
+        
+        // Generate simple HTML embed code (Option 1)
+        const embedCode = `<div style="border:1px solid #333; padding:16px; background:#111; border-radius:8px; max-width:400px; font-family:sans-serif;">
+  <h3 style="color:#10b981; margin:0 0 8px;">${albumTitle}</h3>
+  <p style="color:#9ca3af; font-size:14px; margin:0 0 4px;">by ${artistName}</p>
+  <p style="color:#9ca3af; font-size:14px; margin:0 0 12px;">Check out this album on PyGroove</p>
+  <a href="${albumUrl}" style="color:#a855f7; text-decoration:none; font-size:14px;">View Album →</a>
+</div>`;
+
+        navigator.clipboard.writeText(embedCode).then(() => {
+            showMessage('embedCopiedMessage');
+        }).catch(err => {
+            console.error('Failed to copy embed code:', err);
+        });
+    }
+
+    // Show success message temporarily
+    function showMessage(elementId) {
+        const messageEl = document.getElementById(elementId);
+        messageEl.classList.remove('hidden');
+        setTimeout(() => {
+            messageEl.classList.add('hidden');
+        }, 2000);
+    }
 </script>
 <div class="max-w-[1600px] mx-auto px-4">
     <!-- Back button -->
@@ -320,16 +360,27 @@
                         </form>
                     {% endif %}
                     
-                    <!-- Share Links (placeholders) -->
+                    <!-- Copy Link -->
                     <div>
-                        <button class="text-gray-500 text-sm cursor-not-allowed" disabled>
-                            Copy Link <span class="text-xs">(coming soon)</span>
+                        <button onclick="copyAlbumLink()" 
+                                class="text-white hover:text-vinyl-teal text-sm transition-colors cursor-pointer bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded border border-gray-700 hover:border-vinyl-teal w-full text-left flex items-center justify-between group">
+                            <span>Copy Link</span>
+                            <svg class="w-4 h-4 text-gray-400 group-hover:text-vinyl-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                            </svg>
                         </button>
+                        <div id="linkCopiedMessage" class="text-green-400 text-xs mt-1 hidden">✓ Link copied!</div>
                     </div>
+                    <!-- Copy Embed Code -->
                     <div>
-                        <button class="text-gray-500 text-sm cursor-not-allowed" disabled>
-                            Copy Embed Code <span class="text-xs">(coming soon)</span>
+                        <button onclick="copyEmbedCode()" 
+                                class="text-white hover:text-vinyl-teal text-sm transition-colors cursor-pointer bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded border border-gray-700 hover:border-vinyl-teal w-full text-left flex items-center justify-between group">
+                            <span>Copy Embed Code</span>
+                            <svg class="w-4 h-4 text-gray-400 group-hover:text-vinyl-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                            </svg>
                         </button>
+                        <div id="embedCopiedMessage" class="text-green-400 text-xs mt-1 hidden">✓ Embed code copied!</div>
                     </div>
                 </div>
             </div>
