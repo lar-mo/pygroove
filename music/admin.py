@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils import timezone
 from .models import Genre, RecordLabel, Artist, Album, Track, Cart, CartItem, Checkout
 
 
@@ -51,11 +52,12 @@ class TrackInline(admin.TabularInline):
 
 @admin.register(Album)
 class AlbumAdmin(admin.ModelAdmin):
-    list_display = ["title", "artist", "genre", "release_date", "record_label", "number_of_discs"]
+    list_display = ["title", "artist", "genre", "release_date", "record_label", "number_of_discs", "is_featured"]
     search_fields = ["title", "artist__name"]
-    list_filter = ["genre", "artist", "record_label", "release_date"]
+    list_filter = ["genre", "artist", "record_label", "release_date", "is_featured"]
     date_hierarchy = "release_date"
     inlines = [TrackInline]
+    readonly_fields = ["featured_at"]
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "artist":
@@ -63,6 +65,17 @@ class AlbumAdmin(admin.ModelAdmin):
         elif db_field.name == "record_label":
             kwargs["queryset"] = RecordLabel.objects.order_by("name")
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def save_model(self, request, obj, form, change):
+        """Auto-update featured_at when is_featured is toggled"""
+        if "is_featured" in form.changed_data:
+            if obj.is_featured:
+                # Album is being featured - set timestamp
+                obj.featured_at = timezone.now()
+            else:
+                # Album is being unfeatured - clear timestamp
+                obj.featured_at = None
+        super().save_model(request, obj, form, change)
 
 
 @admin.register(Track)

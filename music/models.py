@@ -44,6 +44,8 @@ class Album(models.Model):
     record_label = models.ForeignKey(RecordLabel, on_delete=models.SET_NULL, null=True)
     cover_image = models.ImageField(upload_to="album_covers/", blank=True, null=True)
     description = models.TextField(blank=True)
+    is_featured = models.BooleanField(default=False, help_text="Mark as featured on homepage")
+    featured_at = models.DateTimeField(blank=True, null=True, help_text="When this album was featured")
 
     def save(self, *args, **kwargs):
         if not self.slug:
