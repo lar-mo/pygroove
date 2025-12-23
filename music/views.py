@@ -22,9 +22,7 @@ class HomeView(TemplateView):
         context = super().get_context_data(**kwargs)
         # Get up to 6 featured albums (most recently featured first)
         context["featured_albums"] = (
-            Album.objects.filter(is_featured=True)
-            .select_related("artist", "genre")
-            .order_by("-featured_at")[:6]
+            Album.objects.filter(is_featured=True).select_related("artist", "genre").order_by("-featured_at")[:6]
         )
         # Get 6 most recently added albums
         context["recent_albums"] = Album.objects.select_related("artist", "genre").order_by("-id")[:6]
