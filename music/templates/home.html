@@ -5,7 +5,7 @@
         Spin your collection.<br>Share your groove.
     </h1>
     <p class="text-xl text-gray-400 mb-8 max-w-2xl">
-        Browse your personal vinyl and CD collection. Curate albums to share with friends. 
+        Browse your personal vinyl and CD collection. Curate albums to share with friends.
         Keep the music alive, one disc at a time.
     </p>
     <a href="{% url 'albums' %}" class="bg-gradient-to-r from-vinyl-purple to-vinyl-teal px-8 py-4 rounded-lg text-white font-bold text-lg hover:scale-105 transform transition-all shadow-lg hover:shadow-vinyl-purple/50">
@@ -18,7 +18,7 @@
 <div class="mt-16">
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-3xl font-bold">Featured Picks</h2>
-        <a href="{% url 'albums' %}" class="text-vinyl-teal hover:text-vinyl-purple transition-colors">View All →</a>
+        <a href="{% url 'albums' %}?featured=true" class="text-vinyl-teal hover:text-vinyl-purple transition-colors">View All →</a>
     </div>
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {% for album in featured_albums %}
@@ -26,10 +26,10 @@
                 <a href="{% url 'album_detail' album.id album.slug %}" class="block">
                     <div class="aspect-square overflow-hidden bg-gray-800">
                         {% if album.cover_image %}
-                            <img src="{{ album.cover_image.url }}" alt="{{ album.title }}" 
+                            <img src="{{ album.cover_image.url }}" alt="{{ album.title }}"
                                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                         {% else %}
-                            <img src="/media/no_art.jpg" alt="No Cover" 
+                            <img src="/media/no_art.jpg" alt="No Cover"
                                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                         {% endif %}
                     </div>
@@ -56,10 +56,10 @@
                 <a href="{% url 'album_detail' album.id album.slug %}" class="block">
                     <div class="aspect-square overflow-hidden bg-gray-800">
                         {% if album.cover_image %}
-                            <img src="{{ album.cover_image.url }}" alt="{{ album.title }}" 
+                            <img src="{{ album.cover_image.url }}" alt="{{ album.title }}"
                                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                         {% else %}
-                            <img src="/media/no_art.jpg" alt="No Cover" 
+                            <img src="/media/no_art.jpg" alt="No Cover"
                                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                         {% endif %}
                     </div>
