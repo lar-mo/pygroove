@@ -56,6 +56,10 @@ cypress/videos/
 cypress/screenshots/
 node_modules/
 
+# Node/NPM
+package.json
+package-lock.json
+
 # OS
 .DS_Store
 Thumbs.db
