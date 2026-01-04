@@ -338,6 +338,7 @@ def collection_ajax(request):
     artist = request.GET.get("artist")
     label = request.GET.get("label")
     search = request.GET.get("q")
+    featured = request.GET.get("featured")
     sort = request.GET.get("sort", "-id")
     page = request.GET.get("page", 1)
 
@@ -351,9 +352,13 @@ def collection_ajax(request):
         queryset = queryset.filter(record_label__name__icontains=label)
     if search:
         queryset = queryset.filter(title__icontains=search)
+    if featured:
+        queryset = queryset.filter(is_featured=True)
 
     # Apply sorting
-    if sort == "artist":
+    if featured:
+        queryset = queryset.order_by("-featured_at")
+    elif sort == "artist":
         queryset = queryset.order_by("artist__name", "title")
     elif sort == "title":
         queryset = queryset.order_by("title")

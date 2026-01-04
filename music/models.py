@@ -36,7 +36,7 @@ class Artist(models.Model):
 
 class Album(models.Model):
     title = models.CharField(max_length=100)
-    slug = models.SlugField(blank=True)
+    slug = models.SlugField(blank=True, max_length=70)
     artist = models.ForeignKey(Artist, on_delete=models.CASCADE, related_name="albums")
     genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True)
     release_date = models.DateField(blank=True, null=True)
